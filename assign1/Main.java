@@ -10,66 +10,71 @@ class Main {
 
 	void run() {
 		String inputData = getInput();
+		try {
+			PrintWriter out = new PrintWriter("iit2014071.txt");
 
+			for (String datatype : datatypes) {
+				int noFunctions = 0;
+				int noVariables = 0;
+				int initializedVariables = 0;
+				int index = inputData.indexOf(datatype);
 
-		for (String datatype : datatypes) {
-			int noFunctions = 0;
-			int noVariables = 0;
-			int initializedVariables = 0;
-			int index = inputData.indexOf(datatype);
+				ArrayList<String> functions = new ArrayList<String>();
+				while (index >= 0) {
+					int i = index + datatype.length() + 1;
+					int comma = 0;
+					while (true) {
+						if (inputData.charAt(i) == ';') {
+							break;
+						} else if (inputData.charAt(i) == ',') {
+							comma++;
+						} else if (inputData.charAt(i) == '(') {
+							String funName = "";
 
-			ArrayList<String> functions = new ArrayList<String>();
-			while (index >= 0) {
-				int i = index + datatype.length() + 1;
-				int comma = 0;
-				while (true) {
-					if (inputData.charAt(i) == ';') {
-						break;
-					} else if (inputData.charAt(i) == ',') {
-						comma++;
-					} else if (inputData.charAt(i) == '(') {
-						String funName = "";
-						funName = inputData.substring(index + datatype.length() + 1, i); 
-						functions.add(funName);
+							while (inputData.charAt(i) != ')') {
+								i++;
+							}
+							funName = inputData.substring(index + datatype.length() + 1, i+1); 
+							functions.add(funName);
 
-						while (inputData.charAt(i) != ')') {
-							i++;
+							comma = -1;
+							break;
+						} else if (inputData.charAt(i) == '=') {
+							initializedVariables++;
 						}
-						
-						comma = -1;
-						break;
-					} else if (inputData.charAt(i) == '=') {
-						initializedVariables++;
+						i++;
 					}
-					i++;
+					if (comma == -1) {
+						noFunctions += 1;
+						index = inputData.indexOf(datatype, i + 1);
+					} else {
+						noVariables += comma + 1;
+						index = inputData.indexOf(datatype, index + 1);
+					}
 				}
-				if (comma == -1) {
-					noFunctions += 1;
-					index = inputData.indexOf(datatype, i + 1);
-				} else {
-					noVariables += comma + 1;
-					index = inputData.indexOf(datatype, index + 1);
+				out.println(datatype);
+				out.println("Functions " + noFunctions);
+				for (String funName : functions) {
+					out.println(funName);
 				}
+				out.println("Variables " + noVariables);
+				out.println("Initialized " + initializedVariables + " Non-initialized " + (noVariables - initializedVariables));
+				out.println("");
 			}
-			System.out.println(datatype);
-			System.out.println("Functions " + noFunctions);
-			for (String funName : functions) {
-				System.out.println(funName);
-			}
-			System.out.println("Variables " + noVariables);
-			System.out.println("Initialized " + initializedVariables + " Non-initialized " + (noVariables - initializedVariables));
-			System.out.println("");
-		}
 
-		//loops
-		for (String loop : loops) {
-			int index = inputData.indexOf(loop);
-			int count = 0;
-			while (index >= 0) {
-				count++;
-				index = inputData.indexOf(loop, index + 1);
+			//loops
+			for (String loop : loops) {
+				int index = inputData.indexOf(loop);
+				int count = 0;
+				while (index >= 0) {
+					count++;
+					index = inputData.indexOf(loop, index + 1);
+				}
+				out.println(loop + " " + count);
 			}
-			System.out.println(loop + " " + count);
+			out.close();
+		} catch (IOException iex) {
+			iex.printStackTrace();
 		}
 	}
 
