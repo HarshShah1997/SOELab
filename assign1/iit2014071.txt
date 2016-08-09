@@ -1,29 +1,30 @@
-void
-Functions 0
-Variables 0
-Initialized 0 Non-initialized 0
-
-int
+void 
 Functions 1
-ab(int d, int f, int g)
-Variables 5
-Initialized 4 Non-initialized 1
-
-char
-Functions 0
+function(int x, double whileat)
 Variables 0
 Initialized 0 Non-initialized 0
 
-float
-Functions 0
-Variables 0
-Initialized 0 Non-initialized 0
+int 
+Functions 1
+main()
+Variables 3
+Initialized 1 Non-initialized 2
 
-double
+char 
 Functions 0
-Variables 0
-Initialized 0 Non-initialized 0
+Variables 2
+Initialized 0 Non-initialized 2
+
+float 
+Functions 0
+Variables 1
+Initialized 0 Non-initialized 1
+
+double 
+Functions 0
+Variables 1
+Initialized 1 Non-initialized 0
 
 for 1
 while 0
-if 1
+if 2

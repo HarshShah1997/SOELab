@@ -5,7 +5,7 @@ import java.io.*;
 
 class Main {
 
-	String[] datatypes = {"void", "int", "char", "float", "double"};
+	String[] datatypes = {"void ", "int ", "char ", "float ", "double "};
 	String[] loops = {"for", "while", "if"};
 
 	void run() {
@@ -26,15 +26,19 @@ class Main {
 					while (true) {
 						if (inputData.charAt(i) == ';') {
 							break;
+						} else if (inputData.charAt(i) == ')') {
+							comma = -2;
+							break;
 						} else if (inputData.charAt(i) == ',') {
 							comma++;
 						} else if (inputData.charAt(i) == '(') {
 							String funName = "";
+							
 
 							while (inputData.charAt(i) != ')') {
 								i++;
 							}
-							funName = inputData.substring(index + datatype.length() + 1, i+1); 
+							funName = inputData.substring(index + datatype.length(), i+1); 
 							functions.add(funName);
 
 							comma = -1;
@@ -47,10 +51,13 @@ class Main {
 					if (comma == -1) {
 						noFunctions += 1;
 						index = inputData.indexOf(datatype, i + 1);
-					} else {
+					} else if (comma >= 0) {
 						noVariables += comma + 1;
 						index = inputData.indexOf(datatype, index + 1);
+					} else {
+						index = inputData.indexOf(datatype, index + 1);
 					}
+
 				}
 				out.println(datatype);
 				out.println("Functions " + noFunctions);
@@ -67,7 +74,18 @@ class Main {
 				int index = inputData.indexOf(loop);
 				int count = 0;
 				while (index >= 0) {
-					count++;
+					int i = index + loop.length() + 1;
+					int flag = 0;
+					while (inputData.charAt(i) != '(') {
+						if (inputData.charAt(i) != ' ' && inputData.charAt(i) != '\n' && inputData.charAt(i) != '\t') {
+							flag = 1;
+							break;
+						}
+						i++;
+					}
+					if (flag == 0) {
+						count++;
+					}
 					index = inputData.indexOf(loop, index + 1);
 				}
 				out.println(loop + " " + count);
@@ -76,6 +94,7 @@ class Main {
 		} catch (IOException iex) {
 			iex.printStackTrace();
 		}
+		//System.out.println(inputData.indexOf("if"));
 	}
 
 	String getInput() {

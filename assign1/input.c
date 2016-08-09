@@ -1,9 +1,27 @@
-int abc = 3;
-int def, h = 3;
-int ab(int d, int f, int g);
-if (a == b) {
-	int c = d;
+#include <stdio.h>
+
+int main()
+{	
+	int z, y = 2;
+	float c;
+	double *d = NULL;
+	printf("Hello, world\n");
+	char charAt, xif;
+	if (x == y) {
+		printf("True");
+	}
+	for (y = 0; y < 10; y++) {
+		if (y == 0) {
+			continue;
+		}
+	}
+	return 0;
 }
-for (int i = 0; i < n; i++) {
-	a = g;
+
+void function(int x, double whileat) 
+{
+	/* Do anything */
+	int a;
 }
+
+	
