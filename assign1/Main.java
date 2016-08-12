@@ -5,96 +5,107 @@ import java.io.*;
 
 class Main {
 
-	String[] datatypes = {"void ", "int ", "char ", "float ", "double "};
-	String[] loops = {"for", "while", "if"};
+	String[] datatypes = {"int", "char", "float", "double"};
+	String[] loops = {"for", "while"};
 
-	void run() {
+	PrintWriter out;
+
+	void start() {
 		String inputData = getInput();
 		try {
-			PrintWriter out = new PrintWriter("iit2014071.txt");
+			out = new PrintWriter("iit2014071.txt");
 
-			for (String datatype : datatypes) {
-				int noFunctions = 0;
-				int noVariables = 0;
-				int initializedVariables = 0;
-				int index = inputData.indexOf(datatype);
-
-				ArrayList<String> functions = new ArrayList<String>();
-				while (index >= 0) {
-					int i = index + datatype.length() + 1;
-					int comma = 0;
-					while (true) {
-						if (inputData.charAt(i) == ';') {
-							break;
-						} else if (inputData.charAt(i) == ')') {
-							comma = -2;
-							break;
-						} else if (inputData.charAt(i) == ',') {
-							comma++;
-						} else if (inputData.charAt(i) == '(') {
-							String funName = "";
-							
-
-							while (inputData.charAt(i) != ')') {
-								i++;
-							}
-							funName = inputData.substring(index + datatype.length(), i+1); 
-							functions.add(funName);
-
-							comma = -1;
-							break;
-						} else if (inputData.charAt(i) == '=') {
-							initializedVariables++;
-						}
-						i++;
-					}
-					if (comma == -1) {
-						noFunctions += 1;
-						index = inputData.indexOf(datatype, i + 1);
-					} else if (comma >= 0) {
-						noVariables += comma + 1;
-						index = inputData.indexOf(datatype, index + 1);
-					} else {
-						index = inputData.indexOf(datatype, index + 1);
-					}
-
-				}
-				out.println(datatype);
-				out.println("Functions " + noFunctions);
-				for (String funName : functions) {
-					out.println(funName);
-				}
-				out.println("Variables " + noVariables);
-				out.println("Initialized " + initializedVariables + " Non-initialized " + (noVariables - initializedVariables));
-				out.println("");
-			}
-
-			//loops
-			for (String loop : loops) {
-				int index = inputData.indexOf(loop);
-				int count = 0;
-				while (index >= 0) {
-					int i = index + loop.length() + 1;
-					int flag = 0;
-					while (inputData.charAt(i) != '(') {
-						if (inputData.charAt(i) != ' ' && inputData.charAt(i) != '\n' && inputData.charAt(i) != '\t') {
-							flag = 1;
-							break;
-						}
-						i++;
-					}
-					if (flag == 0) {
-						count++;
-					}
-					index = inputData.indexOf(loop, index + 1);
-				}
-				out.println(loop + " " + count);
-			}
-			out.close();
-		} catch (IOException iex) {
-			iex.printStackTrace();
+			detectVariables(inputData);
+			detectFunctions(inputData);
+			detectLoops(inputData);
+			detectConditions(inputData);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		//System.out.println(inputData.indexOf("if"));
+		out.close();
+
+	}
+
+	void detectVariables(String inputData) {
+
+		String variable = "((\\w)+((\\s)*=(\\s)*(.*))*)";
+
+		for (String datatype : datatypes) {
+
+			String pattern = datatype + "(\\s)+" + variable + "(\\s)*(,(\\s)*" + variable + ")*;";
+
+			Pattern r = Pattern.compile(pattern);
+			Matcher m = r.matcher(inputData);
+			out.println("Variables of type: " + datatype);
+			int initialized = 0;
+			int total = 0;
+			while (m.find()) {
+				String matched = inputData.substring(m.start(), m.end());
+				Pair returned = parse(matched);
+				initialized += returned.first;
+				total += returned.second;
+				out.println(inputData.substring(m.start(), m.end()));
+			}
+			out.println("Total = " + total + ", Initialized = " + initialized);
+			out.println("");
+		}
+	}
+
+	void detectFunctions(String inputData) {
+		out.println("Functions: ");
+
+		String argument = "((int|float|char|double)(\\s)+(\\w)+)";
+
+		String function = "(int|float|char|double|void)(\\s)+(\\w)+\\((\\s)*" + argument + "(\\s)*" + "(,(\\s)*" + argument + "(\\s)*)*\\)";
+
+		Pattern pattern = Pattern.compile(function);
+		Matcher m = pattern.matcher(inputData);
+		while (m.find()) {
+			out.println(inputData.substring(m.start(), m.end()));
+		}
+	}
+
+	void detectLoops(String inputData) {
+		out.println("");
+		String pattern = "(while|for)(\\s)*\\((.*)\\)";
+
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(inputData);
+
+		int count = 0;
+		while (m.find()) {
+			count++;
+		}
+		out.println("Loops: " + count);
+	}
+
+	void detectConditions(String inputData) {
+		out.println("");
+
+		String pattern = "if(\\s)*\\((.*)\\)";
+
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(inputData);
+
+		int count = 0;
+		while (m.find()) {
+			count++;
+		}
+		out.println("If-Conditions: " + count);
+	}
+
+	Pair parse(String data) {
+		int initialized = 0;
+		int total = 1;
+
+		for (int i = 0; i < data.length(); i++) {
+			if (data.charAt(i) == '=') {
+				initialized++;
+			} else if (data.charAt(i) == ',') {
+				total++;
+			}
+		}
+		return new Pair(initialized, total);
 	}
 
 	String getInput() {
@@ -111,6 +122,16 @@ class Main {
 	}
 
 	public static void main(String args[]) {
-		new Main().run();
+		new Main().start();
+	}
+}
+
+class Pair {
+	int first;
+	int second;
+
+	Pair(int first, int second) {
+		this.first = first;
+		this.second = second;
 	}
 }

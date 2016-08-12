@@ -2,11 +2,12 @@
 
 int main()
 {	
-	int z, y = 2;
+	int zy, y = 2;
 	float c;
-	double *d = NULL;
+	double d = 32.5;
 	printf("Hello, world\n");
-	char charAt, xif;
+	int c, d;
+	char at, xif;
 	if (x == y) {
 		printf("True");
 	}
@@ -18,10 +19,10 @@ int main()
 	return 0;
 }
 
-void function(int x, double whileat) 
+void function(int x, char whileat) 
 {
 	/* Do anything */
-	int a;
+	int a, b;
 }
 
-	
+int fun2(double y, float z);

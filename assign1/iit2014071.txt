@@ -1,30 +1,25 @@
-void 
-Functions 1
-function(int x, double whileat)
-Variables 0
-Initialized 0 Non-initialized 0
+Variables of type: int
+int zy, y = 2;
+int c, d;
+int a, b;
+Total = 6, Initialized = 1
 
-int 
-Functions 1
-main()
-Variables 3
-Initialized 1 Non-initialized 2
+Variables of type: char
+char at, xif;
+Total = 2, Initialized = 0
 
-char 
-Functions 0
-Variables 2
-Initialized 0 Non-initialized 2
+Variables of type: float
+float c;
+Total = 1, Initialized = 0
 
-float 
-Functions 0
-Variables 1
-Initialized 0 Non-initialized 1
+Variables of type: double
+double d = 32.5;
+Total = 1, Initialized = 1
 
-double 
-Functions 0
-Variables 1
-Initialized 1 Non-initialized 0
+Functions: 
+void function(int x, char whileat)
+int fun2(double y, float z)
 
-for 1
-while 0
-if 2
+Loops: 1
+
+If-Conditions: 2
