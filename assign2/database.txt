@@ -1,6 +1,7 @@
 use assign2;
 
 create table info (
+    -> rollno varchar(20),
     -> name varchar(20),
     -> fathername varchar(20),
     -> address varchar(20),
