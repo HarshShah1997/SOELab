@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+int fact(int a, int b) {
+}
+
 int main()
 {	
 	int zy, y = 2;

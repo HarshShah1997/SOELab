@@ -17,6 +17,7 @@ double d = 32.5;
 Total = 1, Initialized = 1
 
 Functions: 
+int fact(int a, int b)
 int main()
 void function(int x, char whileat)
 int fun2(double y, float z)
