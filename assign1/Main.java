@@ -56,7 +56,7 @@ class Main {
 
 		String argument = "((int|float|char|double)(\\s)+(\\w)+)";
 
-		String function = "(int|float|char|double|void)(\\s)+(\\w)+\\((\\s)*" + argument + "(\\s)*" + "(,(\\s)*" + argument + "(\\s)*)*\\)";
+		String function = "(int|float|char|double|void)(\\s)+(\\w)+\\((\\s)*"+ "(" + argument + "(\\s)*" + "(,(\\s)*" + argument + "(\\s)*)*)*\\)";
 
 		Pattern pattern = Pattern.compile(function);
 		Matcher m = pattern.matcher(inputData);

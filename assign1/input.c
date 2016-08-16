@@ -11,6 +11,8 @@ int main()
 	if (x == y) {
 		printf("True");
 	}
+	printf("while");
+	
 	for (y = 0; y < 10; y++) {
 		if (y == 0) {
 			continue;
