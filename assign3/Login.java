@@ -6,16 +6,16 @@ import java.awt.event.*;
 
 public class Login {
 
-    boolean loggedIn;
     private ArrayList<User> users;
 
     private JFrame frame;
     private JPanel panel;
     private JTextField username;
-    private JTextField password;
+    private JPasswordField password;
+
+    private Home nextPage;
 
     public Login() {
-        loggedIn = false;
         users = new ArrayList<User>();
         users.add(new User("admin", "admin"));
     }
@@ -40,7 +40,7 @@ public class Login {
 
         JPanel passwordPanel = new JPanel();
         JLabel passLabel = new JLabel("Password ");
-        password = new JTextField(15);
+        password = new JPasswordField(15);
         passwordPanel.add(passLabel);
         passwordPanel.add(password);
         passwordPanel.setMaximumSize( passwordPanel.getPreferredSize() );
@@ -70,11 +70,16 @@ public class Login {
 
     class SigninListener implements ActionListener {
         public void actionPerformed(ActionEvent aev) {
-            boolean valid = checkValid(username.getText(), password.getText());
+            boolean valid = checkValid(username.getText(), new String(password.getPassword()));
             if (valid == true) {
-                loggedIn = true;
+                frame.dispose();
+                nextPage.run();
                 //System.out.println("working");
             }
         }
+    }
+
+    public void setNextPage(Home next) {
+        nextPage = next;
     }
 }
