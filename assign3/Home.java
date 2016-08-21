@@ -32,9 +32,15 @@ public class Home {
         for (Subject subject : subjects) {
             for (Student student : students) {
                 student.addSubjectsTaken(subject);
+                ArrayList<Integer> atten = student.attendance.get(subject);
+                for (int i = 0; i < 5; i++) {
+                    atten.add((int)((Math.random() * 5)));
+                }
+                student.attendance.put(subject, atten);
                 subject.studentsEnrolled.add(student);
             }
         }
+
     }
 
     void run() {
