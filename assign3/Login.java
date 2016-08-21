@@ -13,8 +13,6 @@ public class Login {
     private JTextField username;
     private JPasswordField password;
 
-    private Home nextPage;
-
     public Login() {
         users = new ArrayList<User>();
         users.add(new User("admin", "admin"));
@@ -73,13 +71,9 @@ public class Login {
             boolean valid = checkValid(username.getText(), new String(password.getPassword()));
             if (valid == true) {
                 frame.dispose();
-                nextPage.run();
+                new Home().run();
                 //System.out.println("working");
             }
         }
-    }
-
-    public void setNextPage(Home next) {
-        nextPage = next;
     }
 }

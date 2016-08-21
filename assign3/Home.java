@@ -9,11 +9,32 @@ public class Home {
     private JFrame frame;
     private JPanel panel;
 
-    String[] subjects;
+    ArrayList<Subject> subjects;
+    ArrayList<Student> students;
     private JComboBox<String> subjectChoice;
 
+    DisplayAttendance displayAttendance;
+
     public Home() {
-        subjects = new String[]{"ISOE 532C", "IGVC 532C", "ICNW 532C", "IAIN 532C", "MPOE 530C"};
+        subjects = new ArrayList<Subject>();
+        subjects.add(new Subject("ISOE 532C"));
+        subjects.add(new Subject("IGVC 532C"));
+        subjects.add(new Subject("ICNW 532C"));
+        subjects.add(new Subject("IAIN 532C"));
+        subjects.add(new Subject("MPOE 530C"));
+
+        students = new ArrayList<Student>();
+        students.add(new Student("A"));
+        students.add(new Student("B"));
+        students.add(new Student("C"));
+
+
+        for (Subject subject : subjects) {
+            for (Student student : students) {
+                student.addSubjectsTaken(subject);
+                subject.studentsEnrolled.add(student);
+            }
+        }
     }
 
     void run() {
@@ -30,13 +51,15 @@ public class Home {
 
         JPanel subjectPanel = new JPanel();
         JLabel subjectLabel = new JLabel("Select Subject ");
-        subjectChoice = new JComboBox<String>(subjects);
+        subjectChoice = new JComboBox<String>();
+        fillSubjectChoice();
         subjectPanel.add(subjectLabel);
         subjectPanel.add(subjectChoice);
         subjectPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         subjectPanel.setMaximumSize(subjectPanel.getPreferredSize());
 
         JButton attendanceButton = new JButton("Get Attendance");
+        attendanceButton.addActionListener(new attendanceButtonListener());
 
         JButton marksButton = new JButton("Get Marks");
 
@@ -45,10 +68,27 @@ public class Home {
         panel.add(attendanceButton);
         panel.add(marksButton);
 
+        setUpFrame();
+    }
+
+    void setUpFrame() {
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(400, 400);
+    }
+
+    void fillSubjectChoice() {
+        for (Subject subject : subjects) {
+            subjectChoice.addItem(subject.name);
+        }
+    }
+
+    class attendanceButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
+            new DisplayAttendance().run(selectedSubject);
+        }
     }
 }
 
