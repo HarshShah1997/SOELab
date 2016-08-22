@@ -13,8 +13,6 @@ public class Home {
     ArrayList<Student> students;
     private JComboBox<String> subjectChoice;
 
-    DisplayAttendance displayAttendance;
-
     public Home() {
         subjects = new ArrayList<Subject>();
         subjects.add(new Subject("ISOE 532C"));
@@ -24,17 +22,19 @@ public class Home {
         subjects.add(new Subject("MPOE 530C"));
 
         students = new ArrayList<Student>();
-        students.add(new Student("A"));
-        students.add(new Student("B"));
-        students.add(new Student("C"));
+        students.add(new Student("StudentA"));
+        students.add(new Student("StudentB"));
+        students.add(new Student("StudentC"));
 
 
         for (Subject subject : subjects) {
             for (Student student : students) {
                 student.addSubjectsTaken(subject);
                 ArrayList<Integer> atten = student.attendance.get(subject);
+                ArrayList<Integer> marks = student.marks.get(subject);
                 for (int i = 0; i < 5; i++) {
-                    atten.add((int)((Math.random() * 5)));
+                    atten.add(i);
+                    marks.add(i);
                 }
                 student.attendance.put(subject, atten);
                 subject.studentsEnrolled.add(student);
@@ -56,6 +56,23 @@ public class Home {
         heading.setFont(new Font("Myraid Pro", Font.BOLD, 20));
 
         JPanel subjectPanel = new JPanel();
+        fillSubjectPanel(subjectPanel);
+                
+        JPanel reportPanel = new JPanel();
+        fillReportPanel(reportPanel);
+
+        JPanel addRecordPanel = new JPanel();
+        fillAddRecordPanel(addRecordPanel);
+
+        panel.add(heading);
+        panel.add(subjectPanel);
+        panel.add(addRecordPanel);
+        panel.add(reportPanel);
+
+        setUpFrame();
+    }
+
+    void fillSubjectPanel(JPanel subjectPanel) {
         JLabel subjectLabel = new JLabel("Select Subject ");
         subjectChoice = new JComboBox<String>();
         fillSubjectChoice();
@@ -63,18 +80,32 @@ public class Home {
         subjectPanel.add(subjectChoice);
         subjectPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         subjectPanel.setMaximumSize(subjectPanel.getPreferredSize());
+    }
 
+    void fillReportPanel(JPanel reportPanel) {
         JButton attendanceButton = new JButton("Get Attendance");
-        attendanceButton.addActionListener(new attendanceButtonListener());
+        attendanceButton.addActionListener(new AttendanceButtonListener());
 
         JButton marksButton = new JButton("Get Marks");
+        marksButton.addActionListener(new MarksButtonListener());
 
-        panel.add(heading);
-        panel.add(subjectPanel);
-        panel.add(attendanceButton);
-        panel.add(marksButton);
+        reportPanel.add(attendanceButton);
+        reportPanel.add(marksButton);
+        reportPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        reportPanel.setMaximumSize(reportPanel.getPreferredSize());
+    }
 
-        setUpFrame();
+    void fillAddRecordPanel(JPanel addRecordPanel) {
+        JButton addAttendance = new JButton("Add Attendance");
+        addAttendance.addActionListener(new AddAttendanceListener());
+
+        JButton addMarks = new JButton("Add Marks");
+        addMarks.addActionListener(new AddMarksListener());
+
+        addRecordPanel.add(addAttendance);
+        addRecordPanel.add(addMarks);
+        addRecordPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        addRecordPanel.setMaximumSize(addRecordPanel.getPreferredSize());
     }
 
     void setUpFrame() {
@@ -82,6 +113,7 @@ public class Home {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(400, 400);
+        //frame.pack();
     }
 
     void fillSubjectChoice() {
@@ -90,11 +122,33 @@ public class Home {
         }
     }
 
-    class attendanceButtonListener implements ActionListener {
+    class AttendanceButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
             new DisplayAttendance().run(selectedSubject);
         }
     }
+    
+    class MarksButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
+            new DisplayMarks().run(selectedSubject);
+        }
+    }
+
+    class AddAttendanceListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
+            new AddAttendance().run(selectedSubject);
+        }
+    }
+
+    class AddMarksListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
+            new AddMarks().run(selectedSubject);
+        }
+    }
+
 }
 
