@@ -20,4 +20,13 @@ class Student {
         attendance.put(subject, new ArrayList<Integer>());
         marks.put(subject, new ArrayList<Integer>());
     }
+
+    void clearAttendance(Subject subject) {
+        attendance.put(subject, new ArrayList<Integer>());
+    }
+
+    void clearMarks(Subject subject) {
+        marks.put(subject, new ArrayList<Integer>());
+    }
+
 }

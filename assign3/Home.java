@@ -30,13 +30,6 @@ public class Home {
         for (Subject subject : subjects) {
             for (Student student : students) {
                 student.addSubjectsTaken(subject);
-                ArrayList<Integer> atten = student.attendance.get(subject);
-                ArrayList<Integer> marks = student.marks.get(subject);
-                for (int i = 0; i < 5; i++) {
-                    atten.add(i);
-                    marks.add(i);
-                }
-                student.attendance.put(subject, atten);
                 subject.studentsEnrolled.add(student);
             }
         }

@@ -9,7 +9,10 @@ class DisplayMarks {
     private JFrame frame;
     private JPanel panel;
 
+    Subject currentSubject;
+
     void run(Subject subject) {
+        currentSubject = subject;
         frame = new JFrame("Marks of: " + subject.name);
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -26,13 +29,24 @@ class DisplayMarks {
         fillCentralPanel(subject, centralPanel);
         panel.add(centralPanel, BorderLayout.CENTER);
 
+        JPanel clearPanel = new JPanel();
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ClearButtonListener());
+        clearPanel.add(clearButton);
+        panel.add(clearPanel, BorderLayout.SOUTH);
+
         setUpFrame();
     }
 
     void fillCentralPanel(Subject subject, JPanel centralPanel) {
         int rows = subject.studentsEnrolled.size();
         int cols = subject.studentsEnrolled.get(0).marks.get(subject).size();
-        centralPanel.setLayout(new GridLayout(3, 5));
+        centralPanel.setLayout(new GridLayout(rows + 1, cols));
+        centralPanel.add(new JLabel(""));
+        for (int i = 0; i < cols; i++) {
+            centralPanel.add(new JLabel("Test" + (i+1)));
+        }
+
         for (Student student : subject.studentsEnrolled) {
             centralPanel.add(new JLabel(student.name));
             for (int i = 0; i < student.marks.get(subject).size(); i++) {
@@ -46,11 +60,20 @@ class DisplayMarks {
 
     }
 
-
     void setUpFrame() {
         frame.add(panel);
         frame.setSize(500, 400);
         //frame.pack();
         frame.setVisible(true);
     }
+
+    class ClearButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            for (Student student : currentSubject.studentsEnrolled) {
+                student.clearMarks(currentSubject);
+            }
+            frame.dispose();
+        }
+    }
+
 }
