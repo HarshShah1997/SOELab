@@ -65,7 +65,6 @@ public class Home {
         panel.add(subjectPanel);
         panel.add(addRecordPanel);
         panel.add(reportPanel);
-        panel.add(savePanel);
 
         setUpFrame();
     }
@@ -132,6 +131,7 @@ public class Home {
     class AttendanceButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             Subject selectedSubject = subjects.get(subjectChoice.getSelectedIndex());
+            //System.out.println(selectedSubject.studentsEnrolled.get(0).attendance.get(selectedSubject));
             new DisplayAttendance().run(selectedSubject);
         }
     }
@@ -162,7 +162,7 @@ public class Home {
             try {
                 FileOutputStream fos = new FileOutputStream("saveFile.ser");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(students);
+                oos.writeObject(students.toArray());
                 oos.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -175,9 +175,14 @@ public class Home {
             try {
                 FileInputStream fis = new FileInputStream("saveFile.ser");
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                ArrayList<Student> studentList = (ArrayList<Student>) ois.readObject();
+                Object[] studentList;
+                studentList = (Object [])ois.readObject();
+                ArrayList<Student> temp = new ArrayList<Student>();
+                for (Object student : studentList) {
+                    temp.add((Student)student);
+                }
                 for (Subject subject : subjects) {
-                    subject.studentsEnrolled = studentList;
+                    subject.studentsEnrolled = temp;
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
