@@ -5,18 +5,16 @@ import java.util.*;
 import javax.swing.border.*;
 import java.io.*;
 
-public class Home {
+public class InstructorHome {
 
     private JFrame frame;
     private JPanel panel;
-
-
-    public Home() {
-        ;
-    }
+    
+    JComboBox<String> subjectChoice;
+    int instructorid;
 
     void run(int instructorid) {
-        //Set up Gui
+        this.instructorid = instructorid;
         frame = new JFrame("Welcome");
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -101,9 +99,7 @@ public class Home {
     }
 
     void fillSubjectChoice() {
-        for (Subject subject : subjects) {
-            subjectChoice.addItem(subject.name);
-        }
+
     }
 
     class AttendanceButtonListener implements ActionListener {
