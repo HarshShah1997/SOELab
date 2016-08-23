@@ -62,7 +62,9 @@ class Main {
             Connection con = DriverManager.getConnection(URL, username, password);
             Statement stmt = con.createStatement();
             ResultSet rs;
-            if (sortBy.equals("")) {
+            if (sortBy.equals("name age")) {
+                rs = stmt.executeQuery("SELECT * FROM info ORDER BY NAME, AGE ASC");
+            } else if (sortBy.equals("")) {
                 rs = stmt.executeQuery("SELECT * FROM info");
             } else {
                 rs = stmt.executeQuery("SELECT * FROM info ORDER BY " + sortBy + " ASC");

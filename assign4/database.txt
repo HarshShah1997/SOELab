@@ -1,0 +1,41 @@
+create table instructor (
+    instructorid int primary key not null auto_increment,
+    instructorname varchar(20) not null,
+    password varchar(20) not null);
+
+create table subject (
+    subjectid int primary key not null auto_increment,
+    subjectname varchar(10) not null);
+
+create table teaches (                                                     
+    instructorid int not null,
+    subjectid int not null,
+    foreign key(instructorid) references instructor(instructorid),
+    foreign key(subjectid) references subject(subjectid));
+
+create table student (
+    studentid int primary key not null auto_increment,
+    studentname varchar(20) not null,
+    password varchar(20) not null);
+
+create table subjectstaken (
+    studentid int not null,
+    subjectid int not null,
+    foreign key(studentid) references student(studentid),
+    foreign key(subjectid) references subject(subjectid));
+
+create table attendance (
+    subjectid int not null,
+    studentid int not null,
+    attendance int not null,
+    foreign key(subjectid) references subject(subjectid),
+    foreign key(studentid) references student(studentid));
+
+create table marks (
+    subjectid int not null,
+    studentid int not null,
+    marks int not null,
+    foreign key(subjectid) references subject(subjectid),
+    foreign key(studentid) references student(studentid));
+
+
