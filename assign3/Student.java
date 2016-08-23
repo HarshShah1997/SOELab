@@ -1,6 +1,7 @@
 import java.util.*;
+import java.io.*;
 
-class Student {
+class Student implements Serializable {
 
     String name;
     ArrayList<Subject> subjectsTaken;

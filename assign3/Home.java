@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.border.*;
+import java.io.*;
 
 public class Home {
 
@@ -57,10 +58,14 @@ public class Home {
         JPanel addRecordPanel = new JPanel();
         fillAddRecordPanel(addRecordPanel);
 
+        JPanel savePanel = new JPanel();
+        fillSavePanel(savePanel);
+
         panel.add(heading);
         panel.add(subjectPanel);
         panel.add(addRecordPanel);
         panel.add(reportPanel);
+        panel.add(savePanel);
 
         setUpFrame();
     }
@@ -99,6 +104,15 @@ public class Home {
         addRecordPanel.add(addMarks);
         addRecordPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         addRecordPanel.setMaximumSize(addRecordPanel.getPreferredSize());
+    }
+
+    void fillSavePanel(JPanel savePanel) {
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(new SaveButtonListener());
+        JButton loadButton = new JButton("Load");
+        loadButton.addActionListener(new LoadButtonListener());
+        savePanel.add(saveButton);
+        savePanel.add(loadButton);
     }
 
     void setUpFrame() {
@@ -143,5 +157,32 @@ public class Home {
         }
     }
 
+    class SaveButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            try {
+                FileOutputStream fos = new FileOutputStream("saveFile.ser");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(students);
+                oos.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    class LoadButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            try {
+                FileInputStream fis = new FileInputStream("saveFile.ser");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                ArrayList<Student> studentList = (ArrayList<Student>) ois.readObject();
+                for (Subject subject : subjects) {
+                    subject.studentsEnrolled = studentList;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
 
