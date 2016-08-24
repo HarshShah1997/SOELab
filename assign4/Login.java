@@ -20,7 +20,10 @@ public class Login {
 
     public Login() {
         error = new JLabel("");
-        ;
+    }
+
+    public Login(String err) {
+        error = new JLabel(err);
     }
 
     void run() {
@@ -65,20 +68,24 @@ public class Login {
         frame.setSize(400, 400);
     }
 
-    int checkValid(String uname, String pass) {
+    int checkValid(String uname, String pass, String tablename) {
+        System.out.println(tablename);
         try {
             Class.forName(DRIVER);
             Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT instructorid, instructorname, password FROM instructor");
-            while (rs.next()) {
-                String currName = rs.getString("instructorname");
-                String currPassword = rs.getString("password");
-                int instructorid = rs.getInt("instructorid");
-                if (currName.equals(uname) && currPassword.equals(pass)) {
-                    con.close();
-                    return instructorid;
-                }
+            String query = "SELECT ? FROM ? WHERE ? = ? AND password = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, tablename + "id");
+            pstmt.setString(2, tablename);
+            pstmt.setString(3, tablename + "name");
+            pstmt.setString(4, uname);
+            pstmt.setString(5, pass);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt(tablename + "id");
+                con.close();
+                return id;
             }
             con.close();
         } catch (Exception ex) {
@@ -89,16 +96,16 @@ public class Login {
 
     class SigninListener implements ActionListener {
         public void actionPerformed(ActionEvent aev) {
-            int instructorid = checkValid(username.getText(), new String(password.getPassword()));
+            int instructorid = checkValid(username.getText(), new String(password.getPassword()), "instructor");
+            int studentid = checkValid(username.getText(), new String(password.getPassword()), "student");
             if (instructorid != -1) {
-                System.out.println("Success");
-                frame.dispose();
+                new InstructorHome().run(instructorid);
+            } else if (studentid != -1) {
+                new StudentHome().run(studentid);
             } else {
-                error.setText("Invalid username/password");
-                frame.revalidate();
-                frame.repaint();
+                new Login("Invalid username/password").run();
             }
-
+            frame.dispose();
         }
     }
 }

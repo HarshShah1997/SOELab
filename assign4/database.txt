@@ -1,3 +1,5 @@
+use assign4;
+
 create table instructor (
     instructorid int primary key not null auto_increment,
     instructorname varchar(20) not null,
@@ -38,4 +40,5 @@ create table marks (
     foreign key(subjectid) references subject(subjectid),
     foreign key(studentid) references student(studentid));
 
+insert into instructor (instructorname, password) values ("admin", "admin");
 
