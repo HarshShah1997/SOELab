@@ -42,3 +42,5 @@ create table marks (
 
 insert into instructor (instructorname, password) values ("admin", "admin");
 
+insert into student (studentname, password) values ("iit2014071", "iit2014071");
+

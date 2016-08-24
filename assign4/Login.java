@@ -69,17 +69,13 @@ public class Login {
     }
 
     int checkValid(String uname, String pass, String tablename) {
-        System.out.println(tablename);
         try {
             Class.forName(DRIVER);
             Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
-            String query = "SELECT ? FROM ? WHERE ? = ? AND password = ?";
+            String query = "SELECT " + tablename + "id FROM " + tablename + " WHERE " + tablename +"name = ? AND password = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, tablename + "id");
-            pstmt.setString(2, tablename);
-            pstmt.setString(3, tablename + "name");
-            pstmt.setString(4, uname);
-            pstmt.setString(5, pass);
+            pstmt.setString(1, uname);
+            pstmt.setString(2, pass);
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
