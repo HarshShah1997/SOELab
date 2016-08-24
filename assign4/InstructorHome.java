@@ -33,7 +33,7 @@ public class InstructorHome {
         BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(bl);
         
-        JLabel heading = new JLabel("HOME");
+        JLabel heading = new JLabel("Instructor Home");
         heading.setFont(new Font("Myraid Pro", Font.BOLD, 20));
 
         JPanel subjectPanel = new JPanel();

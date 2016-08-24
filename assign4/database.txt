@@ -44,3 +44,40 @@ insert into instructor (instructorname, password) values ("admin", "admin");
 
 insert into student (studentname, password) values ("iit2014071", "iit2014071");
 
+insert into subject (subjectname) values ("ISOE532C");
+
+insert into subject (subjectname) values ("MPOE530C");
+
+insert into subject (subjectname) values ("IAIN530C");
+
+insert into subject (subjectname) values ("IGVC532C");
+
+insert into subject (subjectname) values ("ICNW532C");
+
+insert into teaches values (1, 1);
+insert into teaches values (1, 2);
+insert into teaches values (1, 3);
+insert into teaches values (1, 4);
+insert into teaches values (1, 5);
+
+insert into student (studentname, password) values ("iit2014070", "iit2014070");
+insert into student (studentname, password) values ("iit2014072", "iit2014072");
+
+insert into subjectstaken values (1, 1);
+insert into subjectstaken values (1, 2);
+insert into subjectstaken values (2, 3);
+insert into subjectstaken values (2, 4);
+insert into subjectstaken values (3, 1);
+insert into subjectstaken values (3, 2);
+insert into subjectstaken values (3, 5);
+
+insert into instructor (instructorname, password) values ("rkala", "rkala");
+insert into instructor (instructorname, password) values ("ssanyal", "ssanyal");
+
+insert into teaches values (2, 1);
+insert into teaches values (2, 2);
+insert into teaches values (2, 3);
+insert into teaches values (3, 4);
+insert into teaches values (3, 5);
+
+
