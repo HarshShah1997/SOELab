@@ -80,4 +80,11 @@ insert into teaches values (2, 3);
 insert into teaches values (3, 4);
 insert into teaches values (3, 5);
 
+insert into attendance (studentid, subjectid, attendance) values (1, 1, 0);
+insert into attendance (studentid, subjectid, attendance) values (1, 2, 0);
+insert into attendance (studentid, subjectid, attendance) values (2, 3, 0);
+insert into attendance (studentid, subjectid, attendance) values (2, 4, 0);
+insert into attendance (studentid, subjectid, attendance) values (3, 1, 0);
+insert into attendance (studentid, subjectid, attendance) values (3, 2, 0);
+insert into attendance (studentid, subjectid, attendance) values (3, 5, 0);
 

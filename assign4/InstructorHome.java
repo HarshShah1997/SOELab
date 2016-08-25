@@ -17,11 +17,11 @@ public class InstructorHome {
     private JPanel panel;
     
     JComboBox<String> subjectChoice;
-    Map<String, Integer > subjectIdMap;
+    Map<Integer, Integer > subjectIdMap;
     int instructorid;
 
     public InstructorHome() {
-        subjectIdMap = new HashMap<String, Integer>();
+        subjectIdMap = new HashMap<Integer, Integer>();
     }
 
     void run(int instructorid) {
@@ -104,11 +104,13 @@ public class InstructorHome {
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setInt(1, instructorid);
             ResultSet rs = pstmt.executeQuery();
+            int count = 0;
             while (rs.next()) {
                 int currId = rs.getInt("subject.subjectid");
                 String currName = rs.getString("subject.subjectname");
-                subjectIdMap.put(currName, currId);
+                subjectIdMap.put(count, currId);
                 subjectChoice.addItem(currName);
+                count++;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -118,7 +120,7 @@ public class InstructorHome {
     class AttendanceButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-            //new DisplayAttendance().run(selectedSubject);
+            new DisplayAttendanceInstructor().run(selectedSubjectId);
         }
     }
     
@@ -132,7 +134,7 @@ public class InstructorHome {
     class AddAttendanceListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-           // new AddAttendance().run(selectedSubject);
+            new AddAttendance().run(selectedSubjectId);
         }
     }
 

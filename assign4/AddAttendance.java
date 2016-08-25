@@ -3,26 +3,33 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.sql.*;
 
 class AddAttendance {
 
-    JFrame frame;
-    JPanel panel;
+    String URL = "jdbc:mysql://localhost:3306/assign4?useSSL=false";
+    String DRIVER = "com.mysql.jdbc.Driver";
+    String MYSQL_USERNAME = "root";
+    String MYSQL_PASSWORD = "iiita";
 
-    HashMap< Student, JTextField > map;
+    private JFrame frame;
+    private JPanel panel;
 
-    Subject currentSubject;
+    Map< JTextField, Integer > studentidMap;
+
+    int subjectid;
 
     JLabel error;
 
     public AddAttendance() {
-        map = new HashMap< Student, JTextField >();
+        studentidMap = new HashMap< JTextField, Integer >();
         error = new JLabel("");
     }
 
-    void run(Subject subject) {
-        currentSubject = subject;
-        frame = new JFrame("Add record of: " + subject.name);
+    void run(int subjectid) {
+        this.subjectid = subjectid;
+        frame = new JFrame("Update attendance");
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -33,7 +40,7 @@ class AddAttendance {
         heading.setFont(new Font("Myraid Pro", Font.BOLD, 20));
         panel.add(heading);
 
-        fillRecords(subject);
+        fillRecords();
 
         panel.add(error);
 
@@ -44,17 +51,30 @@ class AddAttendance {
         setUpFrame();
     }
 
-    void fillRecords(Subject subject) {
-        for (Student student : subject.studentsEnrolled) {
-            JPanel rowPanel = new JPanel();
-            JLabel studentName = new JLabel(student.name);
-            JTextField record = new JTextField(4);
-            rowPanel.add(studentName);
-            rowPanel.add(record);
-            rowPanel.setMaximumSize(rowPanel.getPreferredSize());
-            panel.add(rowPanel);
+    void fillRecords() {
+        try {
+            Class.forName(DRIVER);
+            Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
+            String query = "SELECT student.studentid, student.studentname FROM student, attendance WHERE attendance.studentid = student.studentid AND attendance.subjectid = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, subjectid);
+            ResultSet rs = pstmt.executeQuery();
 
-            map.put(student, record);
+            while (rs.next()) {
+                int currStudentid = rs.getInt("student.studentid");
+                String currStudentname = rs.getString("student.studentname");
+
+                JPanel rowPanel = new JPanel();
+                JTextField record = new JTextField(3);
+                rowPanel.add(new JLabel(currStudentname));
+                studentidMap.put(record, currStudentid);
+                rowPanel.add(record);
+                rowPanel.setMaximumSize(rowPanel.getPreferredSize());
+                panel.add(rowPanel);
+            }
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -66,9 +86,8 @@ class AddAttendance {
 
     boolean checkValid() {
         try {
-            for (Student student : currentSubject.studentsEnrolled) {
-                ArrayList<Integer> atten = student.attendance.get(currentSubject);
-                int rec = Integer.parseInt(map.get(student).getText());
+            for (JTextField record : studentidMap.keySet()) {
+                int res = Integer.parseInt(record.getText());
             }
             return true;
         } catch (NumberFormatException nex) {
@@ -76,17 +95,33 @@ class AddAttendance {
         }
     }
 
+    void updateTable() {
+        try {
+            Class.forName(DRIVER);
+            Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
+            for (JTextField record : studentidMap.keySet()) {
+                int studentid = studentidMap.get(record);
+                int newAtten = Integer.parseInt(record.getText());
+
+                String query = "UPDATE attendance SET attendance = attendance + ? WHERE studentid = ? AND subjectid = ?";
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setInt(1, newAtten);
+                pstmt.setInt(2, studentid);
+                pstmt.setInt(3, subjectid);
+                pstmt.executeUpdate();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     class SaveButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             boolean isValid = checkValid();
             if (isValid == true) {
-                for (Student student : currentSubject.studentsEnrolled) {
-                    ArrayList<Integer> atten = student.attendance.get(currentSubject);
-                    int rec = Integer.parseInt(map.get(student).getText());
-                    atten.add(rec);
-                    student.attendance.put(currentSubject, atten);
-                }
-                frame.dispose();
+                updateTable();
+                error.setText("Updated Successfully");
+                frame.repaint();
             } else {
                 error.setText("Enter valid entries");
                 frame.repaint();
