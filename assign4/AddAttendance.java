@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.sql.*;
 
-class AddAttendance {
+public class AddAttendance {
 
     String URL = "jdbc:mysql://localhost:3306/assign4?useSSL=false";
     String DRIVER = "com.mysql.jdbc.Driver";
@@ -16,11 +16,11 @@ class AddAttendance {
     private JFrame frame;
     private JPanel panel;
 
-    Map< JTextField, Integer > studentidMap;
+    private Map< JTextField, Integer > studentidMap;
 
-    int subjectid;
+    private int subjectid;
 
-    JLabel error;
+    private JLabel error;
 
     public AddAttendance() {
         studentidMap = new HashMap< JTextField, Integer >();

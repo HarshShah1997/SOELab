@@ -16,9 +16,9 @@ public class InstructorHome {
     private JFrame frame;
     private JPanel panel;
     
-    JComboBox<String> subjectChoice;
-    Map<Integer, Integer > subjectIdMap;
-    int instructorid;
+    private JComboBox<String> subjectChoice;
+    private Map<Integer, Integer > subjectIdMap;
+    private int instructorid;
 
     public InstructorHome() {
         subjectIdMap = new HashMap<Integer, Integer>();

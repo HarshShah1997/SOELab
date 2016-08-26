@@ -37,18 +37,10 @@ public class Login {
         heading.setFont(new Font("Myraid Pro", Font.BOLD, 20));
 
         JPanel usernamePanel = new JPanel();
-        JLabel userLabel = new JLabel("Username ");
-        username = new JTextField(15);
-        usernamePanel.add(userLabel);
-        usernamePanel.add(username);
-        usernamePanel.setMaximumSize( usernamePanel.getPreferredSize() );
+        fillUsernamePanel(usernamePanel);
 
         JPanel passwordPanel = new JPanel();
-        JLabel passLabel = new JLabel("Password ");
-        password = new JPasswordField(15);
-        passwordPanel.add(passLabel);
-        passwordPanel.add(password);
-        passwordPanel.setMaximumSize( passwordPanel.getPreferredSize() );
+        fillPasswordPanel(passwordPanel);
 
         JButton button = new JButton("Sign In");
         button.addActionListener(new SigninListener());
@@ -62,6 +54,26 @@ public class Login {
         panel.add(button);
         panel.add(invalidPanel);
 
+        setUpFrame();
+    }
+
+    void fillUsernamePanel(JPanel usernamePanel) {
+        JLabel userLabel = new JLabel("Username ");
+        username = new JTextField(15);
+        usernamePanel.add(userLabel);
+        usernamePanel.add(username);
+        usernamePanel.setMaximumSize(usernamePanel.getPreferredSize());
+    }
+
+    void fillPasswordPanel(JPanel passwordPanel) {
+        JLabel passLabel = new JLabel("Password ");
+        password = new JPasswordField(15);
+        passwordPanel.add(passLabel);
+        passwordPanel.add(password);
+        passwordPanel.setMaximumSize(passwordPanel.getPreferredSize());
+    }
+
+    void setUpFrame() {
         frame.getContentPane().add(panel);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

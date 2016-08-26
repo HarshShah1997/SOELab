@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.*;
 
-class StudentHome {
+public class StudentHome {
 
     String URL = "jdbc:mysql://localhost:3306/assign4?useSSL=false";
     String DRIVER = "com.mysql.jdbc.Driver";
@@ -16,10 +16,10 @@ class StudentHome {
     private JFrame frame;
     private JPanel panel;
 
-    JComboBox<String> subjectChoice;
-    Map<String, Integer> subjectIdMap;
+    private JComboBox<String> subjectChoice;
+    private Map<String, Integer> subjectIdMap;
 
-    int studentid;
+    private int studentid;
 
     public StudentHome() {
         subjectIdMap = new HashMap<String, Integer>();

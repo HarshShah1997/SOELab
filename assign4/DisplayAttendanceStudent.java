@@ -6,7 +6,7 @@ import javax.swing.border.*;
 import java.io.*;
 import java.sql.*;
 
-class DisplayAttendanceStudent {
+public class DisplayAttendanceStudent {
 
     String URL = "jdbc:mysql://localhost:3306/assign4?useSSL=false";
     String DRIVER = "com.mysql.jdbc.Driver";
@@ -16,7 +16,7 @@ class DisplayAttendanceStudent {
     private JFrame frame;
     private JPanel panel;
 
-    int studentid;
+    private int studentid;
 
     void run(int studentid) {
         this.studentid = studentid;
@@ -67,9 +67,8 @@ class DisplayAttendanceStudent {
     }
 
     void setUpFrame() {
-        frame.add(panel);
+        frame.getContentPane().add(panel);
         frame.setSize(400, 200);
-        //frame.pack();
         frame.setVisible(true);
     }
 }
