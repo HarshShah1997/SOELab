@@ -127,7 +127,7 @@ public class InstructorHome {
     class MarksButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-            //new DisplayMarks().run(selectedSubject);
+            new DisplayMarksInstructor().run(selectedSubjectId);
         }
     }
 
@@ -141,7 +141,7 @@ public class InstructorHome {
     class AddMarksListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-           // new AddMarks().run(selectedSubject);
+            new AddMarks().run(selectedSubjectId);
         }
     }
 }

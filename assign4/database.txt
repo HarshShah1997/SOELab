@@ -88,3 +88,11 @@ insert into attendance (studentid, subjectid, attendance) values (3, 1, 0);
 insert into attendance (studentid, subjectid, attendance) values (3, 2, 0);
 insert into attendance (studentid, subjectid, attendance) values (3, 5, 0);
 
+insert into marks (studentid, subjectid, marks) values (1, 1, 0);
+insert into marks (studentid, subjectid, marks) values (1, 2, 0);
+insert into marks (studentid, subjectid, marks) values (2, 3, 0);
+insert into marks (studentid, subjectid, marks) values (2, 4, 0);
+insert into marks (studentid, subjectid, marks) values (3, 1, 0);
+insert into marks (studentid, subjectid, marks) values (3, 2, 0);
+insert into marks (studentid, subjectid, marks) values (3, 5, 0);
+

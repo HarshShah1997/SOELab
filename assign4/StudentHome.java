@@ -62,10 +62,10 @@ class StudentHome {
 
     void fillReportPanel(JPanel reportPanel) {
         JButton attendanceButton = new JButton("Show my Attendance");
-        //attendanceButton.addActionListener(new AttendanceButtonListener());
+        attendanceButton.addActionListener(new AttendanceButtonListener());
 
         JButton marksButton = new JButton("Show my Marks");
-        //marksButton.addActionListener(new MarksButtonListener());
+        marksButton.addActionListener(new MarksButtonListener());
 
         reportPanel.add(attendanceButton);
         reportPanel.add(marksButton);
@@ -97,5 +97,17 @@ class StudentHome {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
         frame.setVisible(true);
+    }
+
+    class AttendanceButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            new DisplayAttendanceStudent().run(studentid);
+        }
+    }
+
+    class MarksButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            new DisplayMarksStudent().run(studentid);
+        }
     }
 }
