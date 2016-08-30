@@ -77,7 +77,7 @@ public class Login {
         frame.getContentPane().add(panel);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(400, 200);
     }
 
     int checkValid(String uname, String pass, String tablename) {
@@ -106,7 +106,9 @@ public class Login {
         public void actionPerformed(ActionEvent aev) {
             int instructorid = checkValid(username.getText(), new String(password.getPassword()), "instructor");
             int studentid = checkValid(username.getText(), new String(password.getPassword()), "student");
-            if (instructorid != -1) {
+            if (instructorid == 1) {
+                new AdminHome().run(instructorid);
+            } else if (instructorid != -1) {
                 new InstructorHome().run(instructorid);
             } else if (studentid != -1) {
                 new StudentHome().run(studentid);
