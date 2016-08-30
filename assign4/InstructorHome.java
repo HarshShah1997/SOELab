@@ -45,10 +45,14 @@ public class InstructorHome {
         JPanel addRecordPanel = new JPanel();
         fillAddRecordPanel(addRecordPanel);
 
+        JButton logout = new JButton("Logout");
+        logout.addActionListener(new LogoutListener());
+
         panel.add(heading);
         panel.add(subjectPanel);
         panel.add(addRecordPanel);
         panel.add(reportPanel);
+        panel.add(logout);
 
         setUpFrame();
     }
@@ -142,6 +146,13 @@ public class InstructorHome {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
             new AddMarks().run(selectedSubjectId);
+        }
+    }
+
+    class LogoutListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            new Login().run();
+            frame.dispose();
         }
     }
 }

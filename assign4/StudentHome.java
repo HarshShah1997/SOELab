@@ -43,9 +43,13 @@ public class StudentHome {
         JPanel reportPanel = new JPanel();
         fillReportPanel(reportPanel);
 
+        JButton logout = new JButton("Logout");
+        logout.addActionListener(new LogoutListener());
+
         panel.add(heading);
         panel.add(subjectPanel);
         panel.add(reportPanel);
+        panel.add(logout);
 
         setUpFrame();
     }
@@ -110,4 +114,12 @@ public class StudentHome {
             new DisplayMarksStudent().run(studentid);
         }
     }
+
+    class LogoutListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            new Login().run();
+            frame.dispose();
+        }
+    }
+
 }
