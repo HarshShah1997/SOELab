@@ -181,7 +181,7 @@ public class AdminHome {
 
     class AddInstructorListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
-            System.out.println("Working");
+            new AddInstructor().run();
         }
     }
 }

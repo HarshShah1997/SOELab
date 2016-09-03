@@ -5,7 +5,7 @@ import java.awt.event.*;
 import java.sql.*;
 import java.io.*;
 
-public class AddStudent {
+public class AddInstructor {
 
     String URL = "jdbc:mysql://localhost:3306/assign4?useSSL=false";
     String DRIVER = "com.mysql.jdbc.Driver";
@@ -15,21 +15,21 @@ public class AddStudent {
     private JFrame frame;
     private JPanel panel;
 
-    private JTextField studentname;
+    private JTextField instructorname;
     private JTextField password;
     private JList<String> subjectsList;
     private Map< String, Integer> subjectidMap;
 
     private JLabel error;
 
-    public AddStudent() {
+    public AddInstructor() {
         subjectsList = new JList<String>();
         subjectsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         subjectidMap = new HashMap< String, Integer>();
         error = new JLabel("");
     }
 
-    public AddStudent(String errmsg) {
+    public AddInstructor(String errmsg) {
         this();
         error = new JLabel(errmsg);
     }
@@ -61,19 +61,19 @@ public class AddStudent {
     }
 
     void fillNamePanel(JPanel namePanel) {
-        JLabel studentNameLabel = new JLabel("Student's Name *");
-        studentname = new JTextField(10);
+        JLabel instructorNameLabel = new JLabel("Instructor's Name *");
+        instructorname = new JTextField(10);
 
-        namePanel.add(studentNameLabel);
-        namePanel.add(studentname);
+        namePanel.add(instructorNameLabel);
+        namePanel.add(instructorname);
         namePanel.setMaximumSize(namePanel.getPreferredSize());
     }
 
     void fillPasswordPanel(JPanel passwordPanel) {
-        JLabel studentPasswordLabel = new JLabel("Password *");
+        JLabel instructorPasswordLabel = new JLabel("Password *");
         password = new JTextField(10);
         
-        passwordPanel.add(studentPasswordLabel);
+        passwordPanel.add(instructorPasswordLabel);
         passwordPanel.add(password);
         passwordPanel.setMaximumSize(passwordPanel.getPreferredSize());
     }
@@ -116,45 +116,43 @@ public class AddStudent {
         frame.setVisible(true);
     }
 
-    void addStudent() {
+    void addInstructor() {
         try {
             Class.forName(DRIVER);
             Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
-            String query = "INSERT INTO student (studentname, password) VALUES (?, ?)";
+            String query = "INSERT INTO instructor (instructorname, password) VALUES (?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, studentname.getText());
+            pstmt.setString(1, instructorname.getText());
             pstmt.setString(2, password.getText());
             pstmt.executeUpdate();
 
-            query = "SELECT studentid FROM student WHERE studentname = ? AND password = ?";
+            query = "SELECT instructorid FROM instructor WHERE instructorname = ? AND password = ?";
             pstmt = con.prepareStatement(query);
-            pstmt.setString(1, studentname.getText());
+            pstmt.setString(1, instructorname.getText());
             pstmt.setString(2, password.getText());
             ResultSet rs = pstmt.executeQuery();
-            int studentid = -1;
+            int instructorid = -1;
             if (rs.next()) {
-                studentid = rs.getInt("studentid");
+                instructorid = rs.getInt("instructorid");
             }
 
-            addSubjectsToDatabase(studentid);
-            addAttendanceToDatabase(studentid);
-            addMarksToDatabase(studentid);
+            addSubjectsToDatabase(instructorid);
             con.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    void addSubjectsToDatabase(int studentid) {
+    void addSubjectsToDatabase(int instructorid) {
         try {
             Class.forName(DRIVER);
             Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
 
             java.util.List<String> selectedSubjects = subjectsList.getSelectedValuesList();
             for (String subjectname : selectedSubjects) {
-                String query = "INSERT INTO subjectstaken (studentid, subjectid) VALUES (?, ?)";
+                String query = "INSERT INTO teaches (instructorid, subjectid) VALUES (?, ?)";
                 PreparedStatement pstmt = con.prepareStatement(query);
-                pstmt.setInt(1, studentid);
+                pstmt.setInt(1, instructorid);
                 pstmt.setInt(2, subjectidMap.get(subjectname));
                 pstmt.executeUpdate();
             }
@@ -164,48 +162,8 @@ public class AddStudent {
         }
     }
     
-    void addAttendanceToDatabase(int studentid) {
-        try {
-            Class.forName(DRIVER);
-            Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
-
-            java.util.List<String> selectedSubjects = subjectsList.getSelectedValuesList();
-            for (String subjectname : selectedSubjects) {
-                String query = "INSERT INTO attendance (studentid, subjectid, attendance) VALUES (?, ?, ?)";
-                PreparedStatement pstmt = con.prepareStatement(query);
-                pstmt.setInt(1, studentid);
-                pstmt.setInt(2, subjectidMap.get(subjectname));
-                pstmt.setInt(3, 0);
-                pstmt.executeUpdate();
-            }
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    void addMarksToDatabase(int studentid) {
-        try {
-            Class.forName(DRIVER);
-            Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
-
-            java.util.List<String> selectedSubjects = subjectsList.getSelectedValuesList();
-            for (String subjectname : selectedSubjects) {
-                String query = "INSERT INTO marks (studentid, subjectid, marks) VALUES (?, ?, ?)";
-                PreparedStatement pstmt = con.prepareStatement(query);
-                pstmt.setInt(1, studentid);
-                pstmt.setInt(2, subjectidMap.get(subjectname));
-                pstmt.setInt(3, 0);
-                pstmt.executeUpdate();
-            }
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     boolean validate() {
-        if (studentname.getText().equals("")) {
+        if (instructorname.getText().equals("")) {
             return false;
         } else if (password.getText().equals("")) {
             return false;
@@ -217,10 +175,10 @@ public class AddStudent {
         public void actionPerformed(ActionEvent ev) {
             boolean isValid = validate();
             if (isValid) {
-                addStudent();
-                new AddStudent("Added successfully").run();
+                addInstructor();
+                new AddInstructor("Added successfully").run();
             } else {
-                new AddStudent("*Required").run();
+                new AddInstructor("*Required").run();
             }
             frame.dispose();
         }
