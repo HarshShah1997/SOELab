@@ -88,6 +88,9 @@ public class AddAttendance {
         try {
             for (JTextField record : studentidMap.keySet()) {
                 int res = Integer.parseInt(record.getText());
+                if (res < 0) {
+                    return false;
+                }
             }
             return true;
         } catch (NumberFormatException nex) {

@@ -18,10 +18,17 @@ public class AdminHome {
     
     private JComboBox<String> subjectChoice;
     private Map<Integer, Integer > subjectIdMap;
+    private JLabel error;
     private int instructorid;
 
     public AdminHome() {
         subjectIdMap = new HashMap<Integer, Integer>();
+        error = new JLabel("");
+    }
+    
+    public AdminHome(String msg) {
+        error = new JLabel(msg);
+    
     }
 
     void run(int instructorid) {
@@ -42,8 +49,8 @@ public class AdminHome {
         JPanel reportPanel = new JPanel();
         fillReportPanel(reportPanel);
 
-        //JPanel addRecordPanel = new JPanel();
-        //fillAddRecordPanel(addRecordPanel);
+        JPanel addRecordPanel = new JPanel();
+        fillAddRecordPanel(addRecordPanel);
 
         JPanel addMembersPanel = new JPanel();
         fillAddMembersPanel(addMembersPanel);
@@ -53,10 +60,11 @@ public class AdminHome {
 
         panel.add(heading);
         panel.add(subjectPanel);
-        //panel.add(addRecordPanel);
+        panel.add(addRecordPanel);
         panel.add(reportPanel);
         panel.add(addMembersPanel);
         panel.add(logout);
+        panel.add(error);
 
         setUpFrame();
     }
@@ -137,6 +145,28 @@ public class AdminHome {
             ex.printStackTrace();
         }
     }
+    
+    boolean check(int selectedSubjectId) {
+        try {
+            Class.forName(DRIVER);
+            Connection con = DriverManager.getConnection(URL, MYSQL_USERNAME, MYSQL_PASSWORD);
+            String query = "SELECT teaches.subjectid FROM teaches, instructor WHERE "
+                    + "instructor.instructorid = teaches.instructorid AND "
+                    + "instructor.instructorname = 'gcnandi'";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int currSubId = rs.getInt("teaches.subjectid");
+                if (currSubId == selectedSubjectId) {
+                    return true;
+                }
+            }
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
 
     class AttendanceButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
@@ -155,14 +185,29 @@ public class AdminHome {
     class AddAttendanceListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-            new AddAttendance().run(selectedSubjectId);
+            boolean isPossible = check(selectedSubjectId);
+            if (!isPossible) {
+                //System.out.println("Not possible");
+                JOptionPane.showMessageDialog(null, "Invalid choice!", "Error", JOptionPane.ERROR_MESSAGE);
+                //new AdminHome("Invalid choice!").run(this.instructorid);
+            } else {
+                new AddAttendance().run(selectedSubjectId);
+            }
+            
         }
     }
 
     class AddMarksListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             int selectedSubjectId = subjectIdMap.get(subjectChoice.getSelectedIndex());
-            new AddMarks().run(selectedSubjectId);
+            boolean isPossible = check(selectedSubjectId);
+            if (!isPossible) {
+                //System.out.println("Not possible");
+                JOptionPane.showMessageDialog(null, "Invalid choice!", "Error", JOptionPane.ERROR_MESSAGE);
+                //new AdminHome("Invalid choice!").run(instructorid);
+            } else {
+                new AddAttendance().run(selectedSubjectId);
+            }
         }
     }
 
