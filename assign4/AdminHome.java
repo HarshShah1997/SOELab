@@ -42,8 +42,8 @@ public class AdminHome {
         JPanel reportPanel = new JPanel();
         fillReportPanel(reportPanel);
 
-        JPanel addRecordPanel = new JPanel();
-        fillAddRecordPanel(addRecordPanel);
+        //JPanel addRecordPanel = new JPanel();
+        //fillAddRecordPanel(addRecordPanel);
 
         JPanel addMembersPanel = new JPanel();
         fillAddMembersPanel(addMembersPanel);
@@ -53,7 +53,7 @@ public class AdminHome {
 
         panel.add(heading);
         panel.add(subjectPanel);
-        panel.add(addRecordPanel);
+        //panel.add(addRecordPanel);
         panel.add(reportPanel);
         panel.add(addMembersPanel);
         panel.add(logout);

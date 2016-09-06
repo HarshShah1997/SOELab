@@ -96,3 +96,7 @@ insert into marks (studentid, subjectid, marks) values (3, 1, 0);
 insert into marks (studentid, subjectid, marks) values (3, 2, 0);
 insert into marks (studentid, subjectid, marks) values (3, 5, 0);
 
+insert into instructor (instructorname, password) values ('gcnandi', 'gcnandi');
+insert into teaches (instructorid, subjectid) values (4, 2);
+insert into teaches (instructorid, subjectid) values (4, 3);
+
