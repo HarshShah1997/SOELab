@@ -24,7 +24,7 @@ int main()
 	return 0;
 }
 
-void function(int x, char whileat) 
+void function (int x, char whileat) 
 {
 	/* Do anything */
 	int a, b;
