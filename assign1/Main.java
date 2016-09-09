@@ -16,8 +16,9 @@ class Main {
         try {
             out = new PrintWriter("iit2014071.txt");
             System.out.println(inputData);
-            inputData = removeMultilineComments(inputData);
             inputData = removeSinglelineComments(inputData);
+            inputData = removeMultilineComments(inputData);            
+            inputData = removeQuotes(inputData);
             System.out.println(inputData);
 
             detectVariables(inputData);
@@ -33,11 +34,11 @@ class Main {
 
     void detectVariables(String inputData) {
 
-        String variable = "((\\w)+((\\s)*=(\\s)*(.*))*)";
+        String variable = "\\w+(\\s*=\\s*\\w+)?";
 
         for (String datatype : datatypes) {
 
-            String pattern = datatype + "(\\s)+" + variable + "(\\s)*(,(\\s)*" + variable + ")*;";
+            String pattern = datatype + "\\s+" + variable + "(\\s*,\\s*" + variable + ")*;";
 
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(inputData);
@@ -72,7 +73,7 @@ class Main {
 
     void detectLoops(String inputData) {
         out.println("");
-        String pattern = "(while|for)(\\s)*\\((.*)\\)";
+        String pattern = "(while|for)(\\s)*\\(.*?\\)";
 
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(inputData);
@@ -87,7 +88,7 @@ class Main {
     void detectConditions(String inputData) {
         out.println("");
 
-        String pattern = "if(\\s)*\\((.*)\\)";
+        String pattern = "if(\\s)*\\(.*?\\)";
 
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(inputData);
@@ -112,6 +113,14 @@ class Main {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(inputData);
         inputData = m.replaceAll("\n");
+        return inputData;
+    }
+    
+    String removeQuotes(String inputData) {
+        String pattern = "\".*?\"";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(inputData);
+        inputData = m.replaceAll("");
         return inputData;
     }
 
