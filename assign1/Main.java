@@ -16,9 +16,9 @@ class Main {
         try {
             out = new PrintWriter("iit2014071.txt");
             System.out.println(inputData);
-            inputData = removeSinglelineComments(inputData);
-            inputData = removeMultilineComments(inputData);            
             inputData = removeQuotes(inputData);
+            inputData = removeSinglelineComments(inputData);
+            inputData = removeMultilineComments(inputData);                        
             System.out.println(inputData);
 
             detectVariables(inputData);
@@ -34,11 +34,11 @@ class Main {
 
     void detectVariables(String inputData) {
 
-        String variable = "\\w+(\\s*=\\s*\\w+)?";
+        String variable = "\\s*\\*?\\s*\\w+(\\s*=\\s*\\w+)?";
 
         for (String datatype : datatypes) {
 
-            String pattern = datatype + "\\s+" + variable + "(\\s*,\\s*" + variable + ")*;";
+            String pattern = datatype + "\\*?\\s+" + variable + "(\\s*,\\s*" + variable + ")*;";
 
             Pattern r = Pattern.compile(pattern);
             Matcher m = r.matcher(inputData);
@@ -118,7 +118,7 @@ class Main {
     
     String removeQuotes(String inputData) {
         String pattern = "\".*?\"";
-        Pattern p = Pattern.compile(pattern);
+        Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
         Matcher m = p.matcher(inputData);
         inputData = m.replaceAll("");
         return inputData;
