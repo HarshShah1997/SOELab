@@ -31,3 +31,4 @@ void function (int x, char whileat)
 }
 
 int fun2(double y, float z) {
+}
