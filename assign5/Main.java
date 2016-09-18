@@ -18,11 +18,23 @@ public class Main {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(inputData);
         while (m.find()) {
-            System.out.println(inputData.charAt(m.end() - 1));
             int openingIndex = m.end();
             int closingIndex = findMatching(inputData, openingIndex);
-            System.out.println(inputData.charAt(closingIndex));
+            int noDecisionPoints = findDecisionPoints(inputData.substring(openingIndex, closingIndex));
+            System.out.println(m.group(2) + " " + noDecisionPoints);
         }
+    }
+
+    int findDecisionPoints(String data) {
+        int count = 0;
+        String pattern = "(if|while|for)\\s*\\(.*?\\)";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(data);
+        while (m.find()) {
+            //System.out.println(m.group(0));
+            count++;
+        }
+        return count;
     }
 
     int findMatching(String inputData, int openingIndex) {

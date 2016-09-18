@@ -1,6 +1,11 @@
 #include <stdio.h>
 
 int fact(int a, int b) {
+	if (z == 0) {
+		if (y == 0) {
+			if (x == 0)
+		}
+	}
 }
 
 int main()
@@ -28,7 +33,5 @@ void function (int x, char whileat)
 {
 	/* Do anything */
 	int a, b;
-}
-
-int fun2(double y, float z) {
+	if (function) fucntion;
 }
