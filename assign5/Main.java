@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 
 public class Main {
 
-    void run() {
-        String inputData = Helper.getInputFromFile("input.c");
+    void run(String filename) {
+        String inputData = Helper.getInputFromFile(filename);
         inputData = Helper.removeQuotes(inputData);
         inputData = Helper.removeSinglelineComments(inputData);
         inputData = Helper.removeMultilineComments(inputData);
@@ -17,12 +17,17 @@ public class Main {
         String pattern = "(void|int|float|char|double)\\s+(.*)\\(.*?\\)\\s*\\{";
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(inputData);
+        int i = 1;
+        int total = 0;
         while (m.find()) {
             int openingIndex = m.end();
             int closingIndex = findMatching(inputData, openingIndex);
             int noDecisionPoints = findDecisionPoints(inputData.substring(openingIndex, closingIndex));
-            System.out.println(m.group(2) + " " + noDecisionPoints);
+            System.out.println("Function " + m.group(2) + "(C" + i + "): " + noDecisionPoints + " + 1 = " + (noDecisionPoints + 1));
+            total += noDecisionPoints + 1;
+            i++;
         }
+        System.out.println("TC = " + total);
     }
 
     int findDecisionPoints(String data) {
@@ -57,6 +62,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main().run();
+        if (args.length != 1) {
+            System.out.println("Usage: Main filename");
+        } else {
+            new Main().run(args[0]);
+        }
     }
 }
