@@ -1,6 +1,7 @@
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.io.*;
 
 public class Main {
 
@@ -9,81 +10,24 @@ public class Main {
         inputData = Helper.removeQuotes(inputData);
         inputData = Helper.removeSinglelineComments(inputData);
         inputData = Helper.removeMultilineComments(inputData);
-
-        detectFunctions(inputData);
+        decisionTree(inputData);
     }
 
-    void detectFunctions(String inputData) {
-        String pattern = "(void|int|float|char|double)\\s+(.*)\\(.*?\\)\\s*\\{";
-        Pattern functions = Pattern.compile(pattern);
-        Matcher m = functions.matcher(inputData);
-        while (m.find()) {
-            int openingIndex = m.end();
-            int closingIndex = findMatching(inputData, openingIndex);
-            controlFlowGraph(inputData.substring(openingIndex, closingIndex));
-        }
-    }
+    void decisionTree(String data) {
+        String patternStr = "(if|while)\\s*\\((.*?)\\)";
 
-    void controlFlowGraph(String data) {
-        findDecisionPoints(data, 0);
-    }
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(data);
 
-    void findDecisionPoints(String data, int count) {
-        String pattern = "(if|while|for)\\s*\\(.*?\\)\\s*\\{";
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(data);
-        if (m.find()) {
-            int openingIndex = m.end();
-            int closingIndex = findMatching(data, openingIndex);
-            for (int i = 0; i < count; i++) {
-                System.out.print("\t");
-            }
-            System.out.println(m.group(0));
-            //System.out.println(">> " + data.substring(openingIndex, closingIndex));
-            findDecisionPoints(data.substring(openingIndex, closingIndex), count + 1);
-
-            String elsepatternstring = "else\\s*{";
-            Pattern elsepattern = Pattern.compile(elsepatternstring);
-            Matcher elsematcher = elsepattern.matcher(data.substring(closingIndex, data.length()));
-            if (elsematcher.find()) {
-                int elseopen = elsematcher.end();
-                int elseclose = findMatching(data, elseopen);
-                System.out.println(
-
-
-
-            //System.out.println("<");
-            //for (int i = 0; i < count; i++) {
-            //    System.out.print("\t");
-            //}
-            //System.out.println("}");
-            findDecisionPoints(data.substring(closingIndex, data.length()), count);
-        } else {  
-        //for (int i = 0; i < count; i++) {
-        //    System.out.print("\t");
-        //}
+        if (matcher.find()) {
+            System.out.println(matcher.group(2));
+            int openingIndex = matcher.end();
+            int closingIndex = Helper.findMatching(data, openingIndex);
+            String inside = data.substring(
+            System.out.println(data.substring(openingIndex, closingIndex));
+        } else {
             System.out.println(data);
         }
-        
-    }
-
-    int findMatching(String inputData, int openingIndex) {
-        int i = openingIndex;
-        int count = 1;
-        int matchingIndex = -1;
-        while (true) {
-            if (inputData.charAt(i) == '{') {
-                count++;
-            } else if (inputData.charAt(i) == '}') {
-                count--;
-            }
-            if (count == 0) {
-                matchingIndex = i;
-                break;
-            }
-            i++;
-        }
-        return matchingIndex;
     }
 
     public static void main(String[] args) {

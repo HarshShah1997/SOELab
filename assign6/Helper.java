@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,5 +42,28 @@ public class Helper {
             ex.printStackTrace();
         }
         return inputData;
+    }
+    
+    static int findMatching(String inputData, int openingIndex) {
+        int i = openingIndex;
+        int count = 0;
+        boolean flag = false;
+        int matchingIndex = -1;
+        while (true) {
+            if (inputData.charAt(i) == '{') {
+                count++;
+                if (count == 1) {
+                    flag = true;
+                }
+            } else if (inputData.charAt(i) == '}') {
+                count--;
+            }
+            if (count == 0 && flag == true) {
+                matchingIndex = i;
+                break;
+            }
+            i++;
+        }
+        return matchingIndex;
     }
 }
