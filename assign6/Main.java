@@ -21,49 +21,60 @@ public class Main {
         Stack<Node> ifStack = new Stack<Node>();
         Stack<Node> elseStack = new Stack<Node>();
 
+        Stack<Node> waitStack = new Stack<Node>();
+
         for (String stmt : statements) {
             stmt = stmt.trim();
             Node current = new Node("");
-            Pattern pattern = Pattern.compile("(if\\s*\\(.*?\\))\\s*\\{");
-            Matcher matcher = pattern.matcher(stmt);
+            Pattern pattern = Pattern.compile("((if|while)\\s*\\(.*?\\))\\s*\\{");
+            Boolean flag = false;
+            while (true) {
 
-            if (matcher.find()) {
+                Matcher matcher = pattern.matcher(stmt);
+                if (matcher.find()) {
 
-                ifStack.push(new Node(matcher.group(1)));
-                prev.next.add(ifStack.peek());
-                stmt = matcher.replaceAll("");
-                current = new Node(stmt);
-                prev = ifStack.peek();
-                prev.next.add(current);
+                    ifStack.push(new Node(matcher.group(1)));
+                    prev.next.add(ifStack.peek());
+                    stmt = matcher.replaceAll("");
+                    prev = ifStack.peek();
+                    flag = false;
 
-            } else if (!elseStack.empty() && stmt.indexOf("}") != -1) {
+                } else if (!elseStack.empty() && stmt.indexOf("}") != -1) {
 
-                stmt = stmt.substring(stmt.indexOf("}") + 1);
-                current = new Node(stmt);
-                elseStack.peek().next.add(current);
-                prev.next.add(current);
-                elseStack.pop();
+                    stmt = stmt.substring(stmt.indexOf("}") + 1);
+                    waitStack.push(elseStack.peek());
+                    elseStack.pop();
+                    flag = false;
 
-            } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
-                
-                stmt = stmt.substring(stmt.indexOf("}") + 1);
+                } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
 
-                Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
-                Matcher elseMatcher = elsePattern.matcher(stmt);
-                if (elseMatcher.find()) {
-                    elseStack.push(prev);
-                    stmt = elseMatcher.replaceAll("");
-                    current = new Node(stmt);
+                    stmt = stmt.substring(stmt.indexOf("}") + 1);
+
+                    Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
+                    Matcher elseMatcher = elsePattern.matcher(stmt);
+                    if (elseMatcher.find()) {
+                        elseStack.push(prev);
+                        stmt = elseMatcher.replaceAll("");
+                        flag = true;
+                    } else if (ifStack.peek().label.indexOf("while") != -1) {
+                        prev.next.add(ifStack.peek());
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                    waitStack.push(ifStack.peek());
+                    ifStack.pop();
+
                 } else {
                     current = new Node(stmt);
-                    prev.next.add(current);
+                    while (!waitStack.empty()) {
+                        waitStack.pop().next.add(current);
+                    }
+                    if (!flag) {
+                        prev.next.add(current);
+                    }
+                    break;
                 }
-                ifStack.peek().next.add(current);
-                ifStack.pop();
-
-            } else {
-                current = new Node(stmt);
-                prev.next.add(current);
             }
             prev = current;
         }
@@ -72,16 +83,27 @@ public class Main {
     }
 
     void printGraph(Node current) {
-        if (current.label.equals("end")) {
-            return;
-        }
-        System.out.print(current.label.trim() + " -> ");
-        for (Node next : current.next) {
-            System.out.print(next.label.trim() + ", ");
-        }
-        System.out.println("");
-        for (Node next : current.next) {
-            printGraph(next);
+        HashMap<Node, Boolean> visited = new HashMap<Node, Boolean>();
+        Queue<Node> q = new LinkedList<Node>();
+
+        q.add(current);
+        visited.put(current, true);
+
+        while (!q.isEmpty()) {
+            Node top = q.peek();
+            System.out.println(top.label);
+            q.remove();
+            System.out.println("********");
+
+            for (Node next : top.next) {
+                if (visited.get(next) == null) {
+                    q.add(next);
+                    visited.put(next, true);
+                }
+                System.out.print(next.label + ", ");
+            }
+            System.out.println("");
+            System.out.println("-----------");
         }
     }
 
