@@ -17,11 +17,9 @@ public class Main {
         String[] statements = data.split(";");
         Node prev = new Node("start");
         Node start = prev;
-        boolean ifstarted = false;
-        Node ifcondition = new Node("");
 
-        boolean elsestarted = false;
-        Node elsecondition = new Node("");
+        Stack<Node> ifStack = new Stack<Node>();
+        Stack<Node> elseStack = new Stack<Node>();
 
         for (String stmt : statements) {
             stmt = stmt.trim();
@@ -31,45 +29,42 @@ public class Main {
 
             if (matcher.find()) {
 
-                ifcondition = new Node(matcher.group(1));
-                prev.next.add(ifcondition);
-                ifstarted = true;
+                ifStack.push(new Node(matcher.group(1)));
+                prev.next.add(ifStack.peek());
                 stmt = matcher.replaceAll("");
                 current = new Node(stmt);
-                prev = ifcondition;
+                prev = ifStack.peek();
                 prev.next.add(current);
 
-            } else if (elsestarted == true && stmt.indexOf("}") != -1) {
+            } else if (!elseStack.empty() && stmt.indexOf("}") != -1) {
 
-                elsestarted = false;
                 stmt = stmt.substring(stmt.indexOf("}") + 1);
                 current = new Node(stmt);
-                elsecondition.next.add(current);
+                elseStack.peek().next.add(current);
                 prev.next.add(current);
+                elseStack.pop();
 
-            } else if (ifstarted == true && stmt.indexOf("}") != -1) {
+            } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
                 
-                ifstarted = false;
                 stmt = stmt.substring(stmt.indexOf("}") + 1);
 
                 Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
                 Matcher elseMatcher = elsePattern.matcher(stmt);
                 if (elseMatcher.find()) {
-                    elsestarted = true;
-                    elsecondition = prev;
+                    elseStack.push(prev);
                     stmt = elseMatcher.replaceAll("");
                     current = new Node(stmt);
                 } else {
                     current = new Node(stmt);
                     prev.next.add(current);
                 }
-                ifcondition.next.add(current);
+                ifStack.peek().next.add(current);
+                ifStack.pop();
 
             } else {
                 current = new Node(stmt);
                 prev.next.add(current);
             }
-            //System.out.println(stmt);
             prev = current;
         }
         prev.next.add(new Node("end"));
