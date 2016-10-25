@@ -2,6 +2,14 @@
 int main()
 {
     int a, b;
+    if (a) {
+        s1;
+    } else {
+        s3;
+    }
+    return 0;
+}
+    
     /*if (1) {
         int c;
         if (2) {
@@ -12,7 +20,7 @@ int main()
         int f;
     } else {
         int g;
-    }*/
+    }
     while(1) {
         int s1;
         if (1) {
@@ -22,5 +30,5 @@ int main()
         int w2;
     }
     return 0;
-}
+}*/
 

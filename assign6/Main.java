@@ -26,8 +26,10 @@ public class Main {
         for (String stmt : statements) {
             stmt = stmt.trim();
             Node current = new Node("");
-            Pattern pattern = Pattern.compile("((if|while)\\s*\\(.*?\\))\\s*\\{");
+            Pattern pattern = Pattern.compile("((if|while|for)\\s*\\(.*?\\))\\s*\\{");
             Boolean flag = false;
+            
+            int counter = 0;
             while (true) {
 
                 Matcher matcher = pattern.matcher(stmt);
@@ -39,25 +41,36 @@ public class Main {
                     prev = ifStack.peek();
                     flag = false;
 
-                } else if (!elseStack.empty() && stmt.indexOf("}") != -1) {
-
-                    stmt = stmt.substring(stmt.indexOf("}") + 1);
+                } else if (!elseStack.empty() && (stmt.indexOf("}") != -1 || counter == 2)) {
+                    if (counter == 0) {
+                        stmt = stmt.substring(stmt.indexOf("}") + 1);
+                    } else {
+                        counter = 0;
+                    }
                     waitStack.push(elseStack.peek());
                     elseStack.pop();
                     flag = false;
 
                 } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
-
-                    stmt = stmt.substring(stmt.indexOf("}") + 1);
+                        stmt = stmt.substring(stmt.indexOf("}") + 1);
 
                     Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
                     Matcher elseMatcher = elsePattern.matcher(stmt);
+
+                    Pattern elseifPattern = Pattern.compile("\\s*else\\s*");
+                    Matcher elseifMatcher = elseifPattern.matcher(stmt);
+
                     if (elseMatcher.find()) {
                         elseStack.push(prev);
                         stmt = elseMatcher.replaceAll("");
                         flag = true;
-                    } else if (ifStack.peek().label.indexOf("while") != -1) {
+                    } else if (ifStack.peek().label.indexOf("while") != -1 || ifStack.peek().label.indexOf("for") != -1) {
                         prev.next.add(ifStack.peek());
+                        flag = true;
+                    } else if (elseifMatcher.find()) {
+                        elseStack.push(prev);
+                        stmt = elseifMatcher.replaceAll("");
+                        counter = 1;
                         flag = true;
                     } else {
                         flag = false;
@@ -66,6 +79,9 @@ public class Main {
                     ifStack.pop();
 
                 } else {
+                    if (counter == 1) {
+                        counter++;
+                    }
                     current = new Node(stmt);
                     while (!waitStack.empty()) {
                         waitStack.pop().next.add(current);
@@ -91,16 +107,16 @@ public class Main {
 
         while (!q.isEmpty()) {
             Node top = q.peek();
-            System.out.println(top.label);
+            System.out.print(top.label.trim());
             q.remove();
-            System.out.println("********");
+            System.out.print(" -> ");
 
             for (Node next : top.next) {
                 if (visited.get(next) == null) {
                     q.add(next);
                     visited.put(next, true);
                 }
-                System.out.print(next.label + ", ");
+                System.out.print(next.label.trim() + ", ");
             }
             System.out.println("");
             System.out.println("-----------");
