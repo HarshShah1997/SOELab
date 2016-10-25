@@ -26,7 +26,7 @@ public class Main {
     void findCohesion(String data) {
         ArrayList<ArrayList<String>> variablesInMethods = new ArrayList<ArrayList<String>>();
         ArrayList<String> methods = new ArrayList<String>();
-        Pattern detectMethod = Pattern.compile("\\w+\\s+(\\w+\\(.*?\\))\\s*\\{");
+        Pattern detectMethod = Pattern.compile("\\w+\\s+((\\w+)\\((.*?)\\))\\s*\\{");
         ArrayList<String> attributes = new ArrayList<String>();
         Matcher matcher = detectMethod.matcher(data);
         boolean found = false;
@@ -38,8 +38,10 @@ public class Main {
             }
             int openingIndex = matcher.end();
             int closingIndex = Helper.findMatching(data, openingIndex);
-            System.out.println(matcher.group(1));
+            System.out.print(matcher.group(2));
+            System.out.print(" Arguments: " + matcher.group(3));
             variablesInMethods.add(findVariables(data.substring(openingIndex, closingIndex)));
+            System.out.println(" Methods: " + findMethodsInvoked(data.substring(openingIndex, closingIndex)));
             methods.add(matcher.group(1));
             //System.out.println(data.charAt(matcher.start()));
         }
@@ -83,6 +85,17 @@ public class Main {
             }
         }
         return variables;
+    }
+
+    ArrayList<String> findMethodsInvoked(String data) {
+        Pattern detectMethodsInvoked = Pattern.compile("\\b([A-Za-z]\\w*)\\b\\s*\\(");
+        Matcher matcher = detectMethodsInvoked.matcher(data);
+        ArrayList<String> methodsInvoked = new ArrayList<String>();
+        while (matcher.find()) {
+            //System.out.println("> " + matcher.group(1));
+            methodsInvoked.add(matcher.group(1));
+        }
+        return methodsInvoked;
     }
 
     boolean filter(String name) {
