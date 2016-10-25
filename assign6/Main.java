@@ -23,26 +23,27 @@ public class Main {
 
         Stack<Node> waitStack = new Stack<Node>();
 
+        int counter = 0;
         for (String stmt : statements) {
             stmt = stmt.trim();
             Node current = new Node("");
             Pattern pattern = Pattern.compile("((if|while|for)\\s*\\(.*?\\))\\s*\\{");
             Boolean flag = false;
-            
-            int counter = 0;
+
             while (true) {
+                //System.out.println(stmt + ": " + counter);
 
                 Matcher matcher = pattern.matcher(stmt);
                 if (matcher.find()) {
-
-                    ifStack.push(new Node(matcher.group(1)));
+                    Node temp = new Node(matcher.group(1));
+                    ifStack.push(temp);
                     prev.next.add(ifStack.peek());
                     stmt = matcher.replaceAll("");
                     prev = ifStack.peek();
                     flag = false;
 
-                } else if (!elseStack.empty() && (stmt.indexOf("}") != -1 || counter == 2)) {
-                    if (counter == 0) {
+                } else if (!elseStack.empty() && (stmt.indexOf("}") != -1)) {
+                    if (counter != 2) {
                         stmt = stmt.substring(stmt.indexOf("}") + 1);
                     } else {
                         counter = 0;
@@ -50,15 +51,11 @@ public class Main {
                     waitStack.push(elseStack.peek());
                     elseStack.pop();
                     flag = false;
-
                 } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
-                        stmt = stmt.substring(stmt.indexOf("}") + 1);
+                    stmt = stmt.substring(stmt.indexOf("}") + 1);
 
                     Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
                     Matcher elseMatcher = elsePattern.matcher(stmt);
-
-                    Pattern elseifPattern = Pattern.compile("\\s*else\\s*");
-                    Matcher elseifMatcher = elseifPattern.matcher(stmt);
 
                     if (elseMatcher.find()) {
                         elseStack.push(prev);
@@ -67,11 +64,6 @@ public class Main {
                     } else if (ifStack.peek().label.indexOf("while") != -1 || ifStack.peek().label.indexOf("for") != -1) {
                         prev.next.add(ifStack.peek());
                         flag = true;
-                    } else if (elseifMatcher.find()) {
-                        elseStack.push(prev);
-                        stmt = elseifMatcher.replaceAll("");
-                        counter = 1;
-                        flag = true;
                     } else {
                         flag = false;
                     }
@@ -79,9 +71,6 @@ public class Main {
                     ifStack.pop();
 
                 } else {
-                    if (counter == 1) {
-                        counter++;
-                    }
                     current = new Node(stmt);
                     while (!waitStack.empty()) {
                         waitStack.pop().next.add(current);

@@ -2,15 +2,7 @@
 int main()
 {
     int a, b;
-    if (a) {
-        s1;
-    } else {
-        s3;
-    }
-    return 0;
-}
-    
-    /*if (1) {
+    if (1) {
         int c;
         if (2) {
             int d;
@@ -21,14 +13,15 @@ int main()
     } else {
         int g;
     }
-    while(1) {
+    /*while(1) {
         int s1;
         if (1) {
             int s2;
         }
         int w1;
         int w2;
-    }
+    }*/
     return 0;
-}*/
+}
+
 
