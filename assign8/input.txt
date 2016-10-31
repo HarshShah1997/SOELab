@@ -1,0 +1,10 @@
+Activity	Intermediate predecessor	Duration (in weeks)
+A			-				8
+B			-				10
+C			A, B				8
+D			A				9
+E			B				5
+F			C, D				3
+G			D				2
+H			F, G				4
+I			E, F				3
