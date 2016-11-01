@@ -5,9 +5,6 @@ import java.io.*;
 
 public class Main {
 
-    int counter = 0;
-    String[] statements;
-
     void run() {
         String inputData = Helper.getInputFromFile("input.c");
         inputData = Helper.removeQuotes(inputData);
@@ -28,29 +25,78 @@ public class Main {
     }
 
     void decisionTree(String data) {
-        counter = 0;
-        statements = data.split(";");
+        String[] statements = data.split(";");
         Node prev = new Node("start");
         Node start = prev;
 
-        while (counter < statements.length) {
-            String stmt = statements[counter].trim();
-            Pattern detectif = Pattern.compile("if\\s*\\(.*?\\)");
-            Matcher ifmatcher = detectif.matcher(stmt);
-            if (ifmatcher.find()) {
-                solve();
-            } else {
-                Node current = new Node(stmt);
-                prev.next.add(current);
-                prev = current;
-                counter++;
+        Stack<Node> ifStack = new Stack<Node>();
+        Stack<Node> elseStack = new Stack<Node>();
+
+        Stack<Node> waitStack = new Stack<Node>();
+
+        int counter = 0;
+        for (String stmt : statements) {
+            stmt = stmt.trim();
+            Node current = new Node("");
+            Pattern pattern = Pattern.compile("((if|while|for)\\s*\\(.*?\\))\\s*\\{");
+            Boolean flag = false;
+
+            while (true) {
+                //System.out.println(stmt + ": " + counter);
+
+                Matcher matcher = pattern.matcher(stmt);
+                if (matcher.find()) {
+                    Node temp = new Node(matcher.group(1));
+                    ifStack.push(temp);
+                    prev.next.add(ifStack.peek());
+                    stmt = matcher.replaceAll("");
+                    prev = ifStack.peek();
+                    flag = false;
+
+                } else if (!elseStack.empty() && (stmt.indexOf("}") != -1)) {
+                    if (counter != 2) {
+                        stmt = stmt.substring(stmt.indexOf("}") + 1);
+                    } else {
+                        counter = 0;
+                    }
+                    waitStack.push(elseStack.peek());
+                    elseStack.pop();
+                    flag = false;
+                } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
+                    stmt = stmt.substring(stmt.indexOf("}") + 1);
+
+                    Pattern elsePattern = Pattern.compile("\\s*else\\s*\\{");
+                    Matcher elseMatcher = elsePattern.matcher(stmt);
+
+                    if (elseMatcher.find()) {
+                        elseStack.push(prev);
+                        stmt = elseMatcher.replaceAll("");
+                        flag = true;
+                    } else if (ifStack.peek().label.indexOf("while") != -1 || ifStack.peek().label.indexOf("for") != -1) {
+                        prev.next.add(ifStack.peek());
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                    waitStack.push(ifStack.peek());
+                    ifStack.pop();
+
+                } else {
+                    current = new Node(stmt);
+                    while (!waitStack.empty()) {
+                        waitStack.pop().next.add(current);
+                    }
+                    if (!flag) {
+                        prev.next.add(current);
+                    }
+                    break;
+                }
             }
-        }   
+            prev = current;
+        }
+        prev.next.add(new Node("end"));
         printGraph(start);
     }
-
-    Node solve() {
-
 
     void printGraph(Node current) {
         HashMap<Node, Boolean> visited = new HashMap<Node, Boolean>();
