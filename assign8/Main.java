@@ -5,33 +5,48 @@ import java.util.regex.Matcher;
 public class Main {
     
     ArrayList<Activity> table;
+    ArrayList<String> criticalPath = new ArrayList<String>();
 
     void run() {
         String inputData = Helper.getInputFromFile("input.txt");
         createTable(inputData);
-        //System.out.println(table);
-        calculate();
+        calculateTime();
+        findCritical(table);
         printTable();
     }
 
-    void calculate() {
+    void calculateTime() {
         for (Activity activity : table) {
             if (activity.predecessor.size() == 0) {
                 activity.startTime = 0;
                 activity.completionTime = activity.duration;
             } else {
-                activity.startTime = Collections.max(activity.predecessor);
+                activity.startTime = findMax(activity.predecessor);
                 activity.completionTime = activity.startTime + activity.duration;
             }
         }
     }
 
+    void findCritical(ArrayList<Activity> activities) {
+        ArrayList<Activity> crit = new ArrayList<Activity>();
+        int maxTime = findMax(activities);
+        for (Activity activity : activities) {
+            if (activity.completionTime == maxTime) {
+                markCritical(activity);
+            }
+        }
+    }
+
+    void markCritical(Activity activity) {
+        activity.isCritical = true;
+        criticalPath.add(activity.name);
+        findCritical(activity.predecessor);
+    }
+
     void createTable(String data) {
         table = new ArrayList<Activity>();
-
         String[] rows = data.split("\n");
         for (int i = 1; i < rows.length; i++) {
-            //System.out.println(rows[i] + "|");
             table.add(createActivity(rows[i]));
         }
     }
@@ -57,7 +72,6 @@ public class Main {
 
     Activity search(String name) {
         name = name.trim();
-        System.out.println("> " + name);
         for (int i = 0; i < table.size(); i++) {
             if (table.get(i).name.equals(name)) {
                 return table.get(i);
@@ -66,9 +80,25 @@ public class Main {
         return null;
     }
 
+    int findMax(ArrayList<Activity> activities) {
+        int max = 0;
+        for (Activity activity : activities) {
+            if (activity.completionTime > max) {
+                max = activity.completionTime;
+            }
+        }
+        return max;
+    }
+
     void printTable() {
+        System.out.println("Critical Path");
+        for (int i = criticalPath.size() - 1; i >= 0; i--) {
+            System.out.print(criticalPath.get(i) + " ");
+        }
+        System.out.println("");
+        System.out.println("");
         for (Activity activity : table) {
-            System.out.println(activity.name + " " + activity.startTime + " " + activity.completionTime);
+            System.out.println(activity.name + " " + activity.startTime + " " + activity.completionTime + " " + activity.isCritical);
         }
     }
             
@@ -76,5 +106,4 @@ public class Main {
         new Main().run();
     }
 }
-
 
