@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Activity {
+public class Activity implements Comparable<Activity> {
     String name;
     int startTime;
     ArrayList<Activity> predecessor;
@@ -10,8 +10,12 @@ public class Activity {
 
     public Activity(String activityName, ArrayList<Activity> pre, int dur) {
         name = activityName;
-        pre = predecessor;
+        predecessor = pre;
         duration = dur;
+    }
+
+    public int compareTo(Activity b) {
+        return this.startTime - (b.startTime);
     }
 }
 
