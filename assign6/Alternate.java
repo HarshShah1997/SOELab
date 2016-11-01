@@ -3,10 +3,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
 
-public class Main {
+public class Alternate {
 
     int counter = 0;
     String[] statements;
+
+    Pattern detectif = Pattern.compile("if\\s*\\(.*?\\)");
+    Pattern detectIfBracket = Pattern.compile("if\\s*\\(.*?\\)\\s*\\{");
+    Pattern detectElse = Pattern.compile("\\}\\s*else");
+    Pattern detectElseBracket = Pattern.compile("\\}\\s*else\\s*\\{");
+    Pattern detectBracket = Pattern.compile("\\}");
 
     void run() {
         String inputData = Helper.getInputFromFile("input.c");
@@ -35,10 +41,11 @@ public class Main {
 
         while (counter < statements.length) {
             String stmt = statements[counter].trim();
-            Pattern detectif = Pattern.compile("if\\s*\\(.*?\\)");
             Matcher ifmatcher = detectif.matcher(stmt);
             if (ifmatcher.find()) {
-                solve();
+                Node current = new Node(ifmatcher.group(0));
+                prev.next.add(current);
+                solve(current);
             } else {
                 Node current = new Node(stmt);
                 prev.next.add(current);
@@ -49,7 +56,39 @@ public class Main {
         printGraph(start);
     }
 
-    Node solve() {
+    Node solve(Node start) {
+        Node prev = start;
+        String stmt = statements[counter].trim();
+        String lastStmt = "";
+        while (true) {
+            Matcher detectIfBracketMatcher = detectIfBracket.matcher(stmt);
+            Matcher detectElseBracketMatcher = detectElseBracket.matcher(stmt);
+
+            if (detectElseBracketMatcher.find()) {
+
+            
+            if (detectIfBracketMatcher.find()) {
+                stmt = detectIfBracketMatcher.replaceAll("");
+                statements[counter] = stmt;
+                //Detect if again, recursion
+                /*Matcher ifmatcher = detectif.matcher(stmt);
+                  if (ifmatcher.find()) {
+                  Node current = new Node(ifmatcher.group(0));
+                  start.next.add(current);
+                  solve(current);
+                  } else */
+                Node current = new Node(stmt);
+                prev.next.add(current);
+            }
+        }
+    }
+
+
+
+
+
+
+
 
 
     void printGraph(Node current) {
@@ -78,6 +117,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main().run();
+        new Alternate().run();
     }
 }
