@@ -20,13 +20,13 @@ public class Main {
             int openingIndex = matcher.end();
             int closingIndex = Helper.findMatching(inputData, openingIndex);
             System.out.println(matcher.group(1));
-            decisionTree(inputData.substring(openingIndex, closingIndex));
+            decisionTree(inputData.substring(openingIndex, closingIndex-1));
         }
     }
 
     void decisionTree(String data) {
         String[] statements = data.split(";");
-        Node prev = new Node("start");
+        Node prev = new Node("start", 0);
         Node start = prev;
 
         Stack<Node> ifStack = new Stack<Node>();
@@ -34,10 +34,10 @@ public class Main {
 
         Stack<Node> waitStack = new Stack<Node>();
 
-        int counter = 0;
+        int counter = 1;
         for (String stmt : statements) {
             stmt = stmt.trim();
-            Node current = new Node("");
+            Node current = new Node("", 0);
             Pattern pattern = Pattern.compile("((if|while|for)\\s*\\(.*?\\))\\s*\\{");
             Boolean flag = false;
 
@@ -46,7 +46,8 @@ public class Main {
 
                 Matcher matcher = pattern.matcher(stmt);
                 if (matcher.find()) {
-                    Node temp = new Node(matcher.group(1));
+                    Node temp = new Node(matcher.group(1), counter);
+                    counter++;
                     ifStack.push(temp);
                     prev.next.add(ifStack.peek());
                     stmt = matcher.replaceAll("");
@@ -54,14 +55,11 @@ public class Main {
                     flag = false;
 
                 } else if (!elseStack.empty() && (stmt.indexOf("}") != -1)) {
-                    if (counter != 2) {
-                        stmt = stmt.substring(stmt.indexOf("}") + 1);
-                    } else {
-                        counter = 0;
-                    }
+                    stmt = stmt.substring(stmt.indexOf("}") + 1);
                     waitStack.push(elseStack.peek());
                     elseStack.pop();
                     flag = false;
+                    //counter++;
                 } else if (!ifStack.empty() && stmt.indexOf("}") != -1) {
                     stmt = stmt.substring(stmt.indexOf("}") + 1);
 
@@ -78,11 +76,13 @@ public class Main {
                     } else {
                         flag = false;
                     }
+                    //counter++;
                     waitStack.push(ifStack.peek());
                     ifStack.pop();
 
                 } else {
-                    current = new Node(stmt);
+                    current = new Node(stmt, counter);
+                    counter++;
                     while (!waitStack.empty()) {
                         waitStack.pop().next.add(current);
                     }
@@ -94,11 +94,14 @@ public class Main {
             }
             prev = current;
         }
-        prev.next.add(new Node("end"));
-        printGraph(start);
+        prev.next.add(new Node("end", counter));
+        int maxCounter = counter;
+        generateGraph(start, maxCounter);
     }
 
-    void printGraph(Node current) {
+    void generateGraph(Node current, int maxCounter) {
+        HashMap<Integer, ArrayList<Integer>> matrix = new HashMap<Integer, ArrayList<Integer>>();
+
         HashMap<Node, Boolean> visited = new HashMap<Node, Boolean>();
         Queue<Node> q = new LinkedList<Node>();
 
@@ -107,21 +110,47 @@ public class Main {
 
         while (!q.isEmpty()) {
             Node top = q.peek();
-            System.out.print(top.label.trim());
+            System.out.print(top.label.trim() + " -> " + top.number);
             q.remove();
-            System.out.print(" -> ");
+            //System.out.print(" -> ");
+            ArrayList<Integer> neighbours = new ArrayList<Integer>();
 
             for (Node next : top.next) {
                 if (visited.get(next) == null) {
                     q.add(next);
                     visited.put(next, true);
                 }
-                System.out.print(next.label.trim() + ", ");
+                neighbours.add(next.number);
+                //System.out.print(next.label.trim() + " > " + next.number + ", ");
             }
             System.out.println("");
-            System.out.println("-----------");
+            //System.out.println("-----------");
+            matrix.put(top.number, neighbours);
+        }
+        //System.out.println(matrix);
+        printGraph(matrix, maxCounter);
+    }
+
+    void printGraph(HashMap<Integer, ArrayList<Integer>> matrix, int maxCounter)
+    {
+        System.out.print("    ");
+        for (int i = 1; i < maxCounter; i++) {
+            System.out.printf("%2d ", i);
+        }
+        System.out.println("");
+        for (int i = 1; i < maxCounter; i++) {
+            System.out.printf("%2d" + ": ", i);
+            for (int j = 1; j < maxCounter; j++) {
+                if (matrix.get(i).indexOf(j) == -1) {
+                    System.out.printf("%2d ", 0);
+                } else {
+                    System.out.printf("%2d ", 1);
+                }
+            }
+            System.out.println("");
         }
     }
+
 
     public static void main(String[] args) {
         new Main().run();

@@ -8,7 +8,7 @@ public class Alternate {
     int counter = 0;
     String[] statements;
 
-    Pattern detectif = Pattern.compile("if\\s*\\(.*?\\)");
+    Pattern detectIf = Pattern.compile("if\\s*\\(.*?\\)");
     Pattern detectIfBracket = Pattern.compile("if\\s*\\(.*?\\)\\s*\\{");
     Pattern detectElse = Pattern.compile("\\}\\s*else");
     Pattern detectElseBracket = Pattern.compile("\\}\\s*else\\s*\\{");
@@ -41,7 +41,7 @@ public class Alternate {
 
         while (counter < statements.length) {
             String stmt = statements[counter].trim();
-            Matcher ifmatcher = detectif.matcher(stmt);
+            Matcher ifmatcher = detectIf.matcher(stmt);
             if (ifmatcher.find()) {
                 Node current = new Node(ifmatcher.group(0));
                 prev.next.add(current);
@@ -69,9 +69,9 @@ public class Alternate {
             
             if (detectIfBracketMatcher.find()) {
                 stmt = detectIfBracketMatcher.replaceAll("");
-                statements[counter] = stmt;
+                //statements[counter] = stmt;
                 //Detect if again, recursion
-                /*Matcher ifmatcher = detectif.matcher(stmt);
+                /*Matcher ifmatcher = detectIf.matcher(stmt);
                   if (ifmatcher.find()) {
                   Node current = new Node(ifmatcher.group(0));
                   start.next.add(current);
