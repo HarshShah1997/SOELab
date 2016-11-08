@@ -1,0 +1,6 @@
+Condition	Rule1	Rule 2	Rule3	Rule4	Rule5	Rule6	Rule7	Rule8
+New_Customer_(15%)	Y 	Y 	Y 	Y 	N 	N 	N 	N
+Loyalty_Customer_(10%)	Y 	Y 	N 	N 	Y 	Y 	N 	N
+Coupon	Y 	N 	Y 	N 	Y 	N 	Y 	N
+Actions	 	 	 	 	 	 	 	 
+Discount	X	X	20	15	30	10	20	0
