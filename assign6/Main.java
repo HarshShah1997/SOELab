@@ -14,7 +14,7 @@ public class Main {
     }
 
     void detectFunctions(String inputData) {
-        Pattern detectFunction = Pattern.compile("\\w+\\s+(\\w+)\\(\\w*\\)\\s*\\{");
+        Pattern detectFunction = Pattern.compile("\\w+\\s+(\\w+)\\(.*?\\)\\s*\\{");
         Matcher matcher = detectFunction.matcher(inputData);
         while (matcher.find()) {
             int openingIndex = matcher.end();
