@@ -14,7 +14,7 @@ public class Main {
     }
 
     void cyclo(String inputData) {
-        String pattern = "(void|int|float|char|double)\\s+(.*)\\(.*?\\)\\s*\\{";
+        String pattern = "(void|int|float|char|double)\\s+(.*?)\\s*\\(.*?\\)\\s*\\{";
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(inputData);
         int i = 1;
@@ -32,13 +32,29 @@ public class Main {
 
     int findDecisionPoints(String data) {
         int count = 0;
-        String pattern = "(if|while|for)\\s*\\(.*?\\)";
+
+        String pattern = "\\b(if|while|for)\\b\\s*\\(.*?\\)";
+        count += countOfPatterns(data, pattern);
+
+        pattern = "(&&|\\|\\|)";
+        count += countOfPatterns(data, pattern);
+
+        pattern = "\\bcase\\b";
+        count += countOfPatterns(data, pattern);
+
+
+        return count;
+    }
+
+    int countOfPatterns(String data, String pattern) {
+        int count = 0;
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(data);
         while (m.find()) {
             //System.out.println(m.group(0));
             count++;
         }
+
         return count;
     }
 
@@ -62,10 +78,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: Main filename");
-        } else {
-            new Main().run(args[0]);
-        }
+        new Main().run("input.c");
     }
 }

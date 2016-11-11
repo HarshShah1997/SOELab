@@ -26,27 +26,28 @@ public class Main {
     void findCohesion(String data) {
         ArrayList<ArrayList<String>> variablesInMethods = new ArrayList<ArrayList<String>>();
         ArrayList<String> methods = new ArrayList<String>();
-        Pattern detectMethod = Pattern.compile("\\w+\\s+((\\w+)\\((.*?)\\))\\s*\\{");
+        Pattern detectMethod = Pattern.compile("(void|float|double|int|boolean)\\s+((\\w+)\\s*\\((.*?)\\))\\s*\\{");
         ArrayList<String> attributes = new ArrayList<String>();
         Matcher matcher = detectMethod.matcher(data);
         boolean found = false;
         System.out.println("Methods:");
         while (matcher.find()) {
             if (!found) {
-                attributes = findVariables(data.substring(0, matcher.start()));
+                attributes = findVariables(data.substring(0, matcher.start()), true);
                 found = true;
             }
             int openingIndex = matcher.end();
             int closingIndex = Helper.findMatching(data, openingIndex);
-            System.out.print(matcher.group(2));
-            System.out.print(" Arguments: " + matcher.group(3));
+            System.out.print(matcher.group(3));
+            System.out.print(" Arguments: " + matcher.group(4));
             variablesInMethods.add(findVariables(data.substring(openingIndex, closingIndex)));
             System.out.println(" Methods: " + findMethodsInvoked(data.substring(openingIndex, closingIndex)));
-            methods.add(matcher.group(1));
+            methods.add(matcher.group(2));
             //System.out.println(data.charAt(matcher.start()));
         }
         //System.out.println(attributes);
         printCohesion(attributes, variablesInMethods, methods);
+        printLcom2(attributes, variablesInMethods, methods);
     }
 
     void printCohesion(ArrayList<String> attributes, ArrayList<ArrayList<String>> variablesInMethods, ArrayList<String> methods) {
@@ -70,11 +71,44 @@ public class Main {
         System.out.println("P: "+ p + " Q: " + q);
         int lcom = (p > q) ? (p - q) : 0;
         System.out.println("LCOM: " + lcom);
-        System.out.println("");
 
     }
 
+    void printLcom2(ArrayList<String> attributes, ArrayList<ArrayList<String>> variablesInMethods, ArrayList<String> methods) {
+        int m = methods.size();
+        int a = attributes.size();
+
+        int summx = 0;
+        for (String attribute : attributes) {
+            //System.out.print(attribute + " : ");
+            int mx = 0;
+            for (int i = 0; i < methods.size(); i++) {
+                if (variablesInMethods.get(i).indexOf(attribute) != -1) {
+                    //System.out.print(methods.get(i) + " ");
+                    mx++;
+                }
+            }
+            //System.out.println("");
+            summx += mx;
+        }
+        //System.out.println("Sum mx " + summx + " m " + m + " a " + a);
+        float lcom2 = 1 - ((float)summx / (m * a));
+        float lcom3 = (m - ((float)summx / a)) / (m -1);
+
+        System.out.println("LCOM2: " + lcom2);
+        System.out.println("LCOM3: " + lcom3);
+        System.out.println("");
+    }
+
     ArrayList<String> findVariables(String data) {
+        return findVariables(data, false);
+    }
+
+    ArrayList<String> findVariables(String data, boolean inMethod) {
+        if (!inMethod) {
+            data = removeDeclarations(data);
+        }
+
         Pattern detectVariables = Pattern.compile("\\b[A-Za-z]\\w*\\b(?!\\s*\\()");
         Matcher matcher = detectVariables.matcher(data);
         ArrayList<String> variables = new ArrayList<String>();
@@ -98,8 +132,18 @@ public class Main {
         return methodsInvoked;
     }
 
+    String removeDeclarations(String data) {
+        Pattern removeLocal = Pattern.compile("(int|char|float|double|boolean)\\s+\\w+");
+        Matcher removeLocalMatcher = removeLocal.matcher(data);
+        while(removeLocalMatcher.find()) {
+            System.out.println("> " + removeLocalMatcher.group(0));
+        }
+        data = removeLocalMatcher.replaceAll("");
+        return data;
+    }
+
     boolean filter(String name) {
-        Pattern keyword = Pattern.compile("(int|float|void|double|public|private|protected|boolean)");
+        Pattern keyword = Pattern.compile("(int|float|void|double|public|private|protected|boolean|if|while|for|switch|static|final)");
         Matcher m = keyword.matcher(name);
         if (m.find()) {
             return false;
