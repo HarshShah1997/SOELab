@@ -38,8 +38,8 @@ public class Main {
 
     String findOperators(String data) {
         String[] comparisons = {"<", ">", "=="};
-        String[] brackets = {"(", "{", "["};
-        String[] arithmetic = {"+", "-", "++", "--", "/", "*", "%"};
+        String[] brackets = {"(", ")", "}", "{", "["};
+        String[] arithmetic = {"++", "--", "+", "-", "/", "*", "%"};
         String[] conditions = {"for", "while", "if", "switch", "case", "else", "default"};
         String[] datatypes = {"void", "char", "int", "float", "double"};
         String[] jumps = {"return", "break", "continue"};
@@ -105,7 +105,11 @@ public class Main {
             if (count != 0) {
                 uniqOperators++;
                 totalOperators += count;
-                System.out.println(op + getClosing(op) + " " + count);
+                if (op.equals("[")) { 
+                    System.out.println(op + getClosing(op) + " " + count);
+                } else {
+                    System.out.println(op + " " + count);
+                }
             }
             data = m.replaceAll(" ");
         }
