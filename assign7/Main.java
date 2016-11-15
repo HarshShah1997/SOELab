@@ -136,7 +136,7 @@ public class Main {
         Pattern removeLocal = Pattern.compile("(int|char|float|double|boolean)\\s+\\w+");
         Matcher removeLocalMatcher = removeLocal.matcher(data);
         while(removeLocalMatcher.find()) {
-            System.out.println("> " + removeLocalMatcher.group(0));
+            //System.out.println("> " + removeLocalMatcher.group(0));
         }
         data = removeLocalMatcher.replaceAll("");
         return data;
